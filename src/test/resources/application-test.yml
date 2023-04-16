@@ -1,0 +1,7 @@
+test:
+  property: world!
+  anotherProperty: Hello
+
+mockito:
+  test:
+    enabled: true
