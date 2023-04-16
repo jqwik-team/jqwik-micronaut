@@ -1,31 +1,16 @@
-# Jqwik
-.jqwik-*
-
-# Gradle
+Thumbs.db
+.DS_Store
 .gradle
 build/
-
-# Ignore Gradle GUI config
-gradle-app.setting
-
-# Eclipse
-.classpath
-.settings/
-.project
-bin/
-
-# IntelliJ
+target/
+out/
+.micronaut/
+.idea
 *.iml
 *.ipr
 *.iws
-*.uml
-.shelf
-.idea/
-out/
-
-# Misc
-*.log
-*.graphml
-
-# Mac
-.DS_Store
+.project
+.settings
+.classpath
+.factorypath
+.jqwik-database
