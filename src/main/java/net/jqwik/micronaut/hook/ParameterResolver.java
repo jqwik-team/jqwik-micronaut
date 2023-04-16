@@ -29,29 +29,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class ParameterResolver implements ResolveParameterHook {
-    private <T> Qualifier<T> resolveQualifier(final Argument<?> argument) {
-        final AnnotationMetadata annotationMetadata = Objects.requireNonNull(argument, "Argument cannot be null")
-                .getAnnotationMetadata();
-        boolean hasMetadata = annotationMetadata != AnnotationMetadata.EMPTY_METADATA;
-
-        final List<String> qualifierTypes = hasMetadata ?
-                annotationMetadata.getAnnotationNamesByStereotype(AnnotationUtil.QUALIFIER) :
-                Collections.emptyList();
-        if (CollectionUtils.isEmpty(qualifierTypes)) {
-            return null;
-        }
-
-        if (qualifierTypes.size() == 1) {
-            return Qualifiers.byAnnotation(annotationMetadata, qualifierTypes.get(0));
-        }
-
-        @SuppressWarnings("unchecked") final Qualifier<T>[] qualifiers = qualifierTypes
-                .stream()
-                .map((type) -> Qualifiers.<T>byAnnotation(annotationMetadata, type))
-                .toArray(Qualifier[]::new);
-        return Qualifiers.byQualifiers(qualifiers);
-    }
-
     @Override
     @NonNullApi
     @Nonnull
@@ -60,35 +37,7 @@ public class ParameterResolver implements ResolveParameterHook {
         return Optional.of(new MicronautSupplier(parameterContext));
     }
 
-    private Argument<?> getArgument(final ParameterResolutionContext parameterContext,
-                                    final ApplicationContext applicationContext) {
-        final Executable declaringExecutable = parameterContext.parameter().getDeclaringExecutable();
-        final int index = parameterContext.index();
-        if (declaringExecutable instanceof Constructor) {
-            final Class<?> declaringClass = declaringExecutable.getDeclaringClass();
-            return applicationContext.findBeanDefinition(declaringClass)
-                    .map(e -> e.getConstructor().getArguments())
-                    .filter(e -> index < e.length)
-                    .map(e -> e[index])
-                    .orElse(null);
-        }
-        try {
-            final ExecutableMethod<?, Object> executableMethod = applicationContext.getExecutableMethod(
-                    declaringExecutable.getDeclaringClass(),
-                    declaringExecutable.getName(),
-                    declaringExecutable.getParameterTypes()
-            );
-            final Argument<?>[] arguments = executableMethod.getArguments();
-            if (index < arguments.length) {
-                return arguments[index];
-            }
-        } catch (final NoSuchMethodException e) {
-            return null;
-        }
-        return null;
-    }
-
-    private class MicronautSupplier implements ParameterSupplier {
+    private static class MicronautSupplier implements ParameterSupplier {
         private final ParameterResolutionContext parameterContext;
 
         MicronautSupplier(final ParameterResolutionContext parameterContext) {
@@ -114,6 +63,34 @@ public class ParameterResolver implements ResolveParameterHook {
             return applicationContext.getBean(argument.getType(), resolveQualifier(argument));
         }
 
+        private Argument<?> getArgument(final ParameterResolutionContext parameterContext,
+                                        final ApplicationContext applicationContext) {
+            final Executable declaringExecutable = parameterContext.parameter().getDeclaringExecutable();
+            final int index = parameterContext.index();
+            if (declaringExecutable instanceof Constructor) {
+                final Class<?> declaringClass = declaringExecutable.getDeclaringClass();
+                return applicationContext.findBeanDefinition(declaringClass)
+                        .map(e -> e.getConstructor().getArguments())
+                        .filter(e -> index < e.length)
+                        .map(e -> e[index])
+                        .orElse(null);
+            }
+            try {
+                final ExecutableMethod<?, Object> executableMethod = applicationContext.getExecutableMethod(
+                        declaringExecutable.getDeclaringClass(),
+                        declaringExecutable.getName(),
+                        declaringExecutable.getParameterTypes()
+                );
+                final Argument<?>[] arguments = executableMethod.getArguments();
+                if (index < arguments.length) {
+                    return arguments[index];
+                }
+            } catch (final NoSuchMethodException e) {
+                return null;
+            }
+            return null;
+        }
+
         private Object propertyFromValueAnnotation(final ApplicationContext applicationContext, final Parameter parameter) {
             return applicationContext.getEnvironment()
                     .getProperty(getValueFromValueAnnotation(parameter), parameter.getType())
@@ -133,6 +110,29 @@ public class ParameterResolver implements ResolveParameterHook {
             return applicationContext.getEnvironment()
                     .getProperty(propertyName, parameter.getType())
                     .orElseThrow(() -> new JqwikException("Unresolvable property specified to @Property: " + parameter.getName()));
+        }
+
+        private <T> Qualifier<T> resolveQualifier(final Argument<?> argument) {
+            final AnnotationMetadata annotationMetadata = Objects.requireNonNull(argument, "Argument cannot be null")
+                    .getAnnotationMetadata();
+            boolean hasMetadata = annotationMetadata != AnnotationMetadata.EMPTY_METADATA;
+
+            final List<String> qualifierTypes = hasMetadata ?
+                    annotationMetadata.getAnnotationNamesByStereotype(AnnotationUtil.QUALIFIER) :
+                    Collections.emptyList();
+            if (CollectionUtils.isEmpty(qualifierTypes)) {
+                return null;
+            }
+
+            if (qualifierTypes.size() == 1) {
+                return Qualifiers.byAnnotation(annotationMetadata, qualifierTypes.get(0));
+            }
+
+            @SuppressWarnings("unchecked") final Qualifier<T>[] qualifiers = qualifierTypes
+                    .stream()
+                    .map(type -> Qualifiers.<T>byAnnotation(annotationMetadata, type))
+                    .toArray(Qualifier[]::new);
+            return Qualifiers.byQualifiers(qualifiers);
         }
     }
 }
