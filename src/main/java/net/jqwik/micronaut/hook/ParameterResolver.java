@@ -130,7 +130,7 @@ public class ParameterResolver implements ResolveParameterHook {
 
             @SuppressWarnings("unchecked") final Qualifier<T>[] qualifiers = qualifierTypes
                     .stream()
-                    .map((type) -> Qualifiers.<T>byAnnotation(annotationMetadata, type))
+                    .map(type -> Qualifiers.<T>byAnnotation(annotationMetadata, type))
                     .toArray(Qualifier[]::new);
             return Qualifiers.byQualifiers(qualifiers);
         }
