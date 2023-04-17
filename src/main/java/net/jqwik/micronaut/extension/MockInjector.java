@@ -14,6 +14,10 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 class MockInjector {
+    private MockInjector() {
+
+    }
+
     /**
      * Injects mock declared at field or method level via @MockBean annotation.
      * Unexpected behavior can happen if both approaches are used for same field. Example:
