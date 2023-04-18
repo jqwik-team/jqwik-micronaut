@@ -1,9 +1,25 @@
 plugins {
     id('io.micronaut.minimal.library') version "3.7.8"
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
 }
 
-version = "0.1"
-group = "net.jqwik"
+static isSnapshotRelease(versionString) {
+    versionString.endsWith('SNAPSHOT')
+}
+
+ext {
+    moduleName = 'net.jqwik.micronaut'
+    jqwikMicronautVersion = '1.0-SNAPSHOT'
+    jqwikVersion = '1.7.4-SNAPSHOT'
+    isSnapshotRelease = isSnapshotRelease(jqwikMicronautVersion)
+}
+
+
+group = moduleName
+version = jqwikMicronautVersion
+description = "Jqwik Micronaut support module"
 
 repositories {
     mavenCentral()
@@ -11,11 +27,13 @@ repositories {
 }
 
 dependencies {
-    api("net.jqwik:jqwik:1.7.4-SNAPSHOT")
-    implementation("net.jqwik:jqwik-engine:1.7.4-SNAPSHOT")
+    api("net.jqwik:jqwik-api:${jqwikVersion}")
+    // TODO: Make it runtimeOnly - requires some modifications
+    implementation("net.jqwik:jqwik-engine:${jqwikVersion}")
     implementation('io.micronaut.test:micronaut-test-core:3.9.2')
     implementation('io.micronaut:micronaut-context:3.8.9')
     implementation 'org.mockito:mockito-core:5.3.0'
+
     testImplementation("io.micronaut:micronaut-http-client:3.8.9")
     testImplementation("io.micronaut:micronaut-http-server-netty:3.8.9")
     testImplementation('org.assertj:assertj-core:3.24.2')
@@ -29,17 +47,91 @@ dependencies {
     /* End of JPA dependencies */
 }
 
+jar {
+    archiveBaseName.set('jqwik-micronaut')
+    archiveVersion.set("${jqwikMicronautVersion}")
+    manifest {
+        attributes('Automatic-Module-Name': "${moduleName}")
+    }
+}
+
 java {
-    sourceCompatibility = JavaVersion.toVersion("8")
-    targetCompatibility = JavaVersion.toVersion("8")
+    withJavadocJar()
+    withSourcesJar()
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+compileTestJava {
+    options.compilerArgs += '-parameters'
+    options.encoding = 'UTF-8'
 }
 
 test {
     useJUnitPlatform {
         includeEngines 'jqwik'
     }
+
+    // testLogging.showStandardStreams = true
+}
+
+publishing {
+    repositories {
+        maven {
+            // hint: password is in ~/.gradle/gradle.properties
+            def ossrhUsername = project.hasProperty('ossrhUsername') ? project.ossrhUsername : ''
+            def ossrhPassword = project.hasProperty('ossrhPassword') ? project.ossrhPassword : ''
+
+            credentials {
+                username = ossrhUsername
+                password = ossrhPassword
+            }
+
+            // change URLs to point to your repos, e.g. http://my.org/repo
+            def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+            url = isSnapshotRelease ? snapshotsRepoUrl : releasesRepoUrl
+        }
+    }
+    publications {
+        jqwikMicronaut(MavenPublication) {
+            groupId = 'net.jqwik'
+            artifactId = 'jqwik-micronaut'
+            from components.java
+            pom {
+                groupId = 'net.jqwik'
+                name = 'jqwik-micronaut'
+                description = "Jqwik Micronaut support module"
+                url = 'https://github.com/jqwik-team/jqwik-micronaut'
+                licenses {
+                    license {
+                        name = 'Eclipse Public License - v 2.0'
+                        url = 'http://www.eclipse.org/legal/epl-v20.html'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'Nahuel92'
+                        name = 'Nahuel Rodríguez'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/jqwik-team/jqwik-micronaut.git'
+                    developerConnection = 'scm:git:git://github.com/jqwik-team/jqwik-micronaut.git'
+                    url = 'https://github.com/jqwik-team/jqwik-micronaut'
+                }
+            }
+        }
+    }
+}
+
+signing {
+    if (!isSnapshotRelease) {
+        sign publishing.publications.jqwikMicronaut
+    }
 }
 
 wrapper {
-    gradleVersion = '8.1'
+    gradleVersion = '8.0.2'
+    // upgrade with: ./gradlew wrapper
 }
