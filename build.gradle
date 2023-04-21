@@ -27,9 +27,7 @@ repositories {
 }
 
 dependencies {
-    api("net.jqwik:jqwik-api:${jqwikVersion}")
-    // TODO: Make it runtimeOnly - requires some modifications
-    implementation("net.jqwik:jqwik-engine:${jqwikVersion}")
+    api("net.jqwik:jqwik:${jqwikVersion}")
     implementation('io.micronaut.test:micronaut-test-core:3.9.2')
     implementation('io.micronaut:micronaut-context:3.8.9')
     implementation 'org.mockito:mockito-core:5.3.0'
