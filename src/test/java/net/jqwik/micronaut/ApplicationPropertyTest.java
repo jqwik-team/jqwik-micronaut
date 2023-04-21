@@ -39,7 +39,7 @@ class ApplicationPropertyTest implements TestPropertyProvider {
 
     @Property(tries = 1)
     @io.micronaut.context.annotation.Property(name = "test.method.property", value = "Hello method!")
-    //@io.micronaut.context.annotation.Property(name = "test.method.property2", value = "Hello method2!")
+    @io.micronaut.context.annotation.Property(name = "test.method.property2", value = "Hello method2!")
     void successOnInjectingApplicationPropertiesFromDifferentInjectionPoints() {
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(mainApplicationProperty).isEqualTo("Hello");
@@ -47,8 +47,7 @@ class ApplicationPropertyTest implements TestPropertyProvider {
             softly.assertThat(classProperty).isEqualTo("Hello world!");
 
             softly.assertThat(getTestApplicationProperty("test.method.property")).contains("Hello method!");
-            //TODO: Fix
-            //softly.assertThat(getTestApplicationProperty("test.method.property2")).contains("Hello method2!");
+            softly.assertThat(getTestApplicationProperty("test.method.property2")).contains("Hello method2!");
 
             softly.assertThat(dynamicProperty).isEqualTo("value");
         });

@@ -47,10 +47,7 @@ public class JqwikMicronautExtension extends AbstractMicronautExtension<Lifecycl
                 context,
                 context.testInstance(),
                 context.targetMethod(),
-                // TODO: support repeated Property annotation
-                context.findAnnotation(Property.class)
-                       .map(Collections::singletonList)
-                       .orElse(Collections.emptyList())
+                context.findRepeatableAnnotations(Property.class)
         );
         beforeTestMethod(testContext);
     }
