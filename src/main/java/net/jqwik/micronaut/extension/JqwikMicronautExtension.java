@@ -6,14 +6,15 @@ import io.micronaut.test.annotation.MicronautTestValue;
 import io.micronaut.test.context.TestContext;
 import io.micronaut.test.extensions.AbstractMicronautExtension;
 import io.micronaut.test.support.TestPropertyProvider;
+
 import net.jqwik.api.lifecycle.ContainerLifecycleContext;
 import net.jqwik.api.lifecycle.LifecycleContext;
 import net.jqwik.api.lifecycle.Lifespan;
 import net.jqwik.api.lifecycle.PropertyLifecycleContext;
 import net.jqwik.api.lifecycle.Store;
-import net.jqwik.engine.support.JqwikAnnotationSupport;
 import net.jqwik.micronaut.annotation.JqwikMicronautTest;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -29,7 +30,7 @@ public class JqwikMicronautExtension extends AbstractMicronautExtension<Lifecycl
     }
 
     public void beforeContainer(final ContainerLifecycleContext context) throws Exception {
-        final MicronautTestValue micronautTestValue = buildMicronautTestValue(context.optionalContainerClass().orElse(null));
+        final MicronautTestValue micronautTestValue = buildMicronautTestValue(context);
         beforeClass(context, context.optionalContainerClass().orElse(null), micronautTestValue);
         beforeTestClass(buildContainerContext(context));
     }
@@ -46,10 +47,7 @@ public class JqwikMicronautExtension extends AbstractMicronautExtension<Lifecycl
                 context,
                 context.testInstance(),
                 context.targetMethod(),
-                JqwikAnnotationSupport.findRepeatableAnnotationOnElementOrContainer(
-                        context.optionalElement().orElse(null),
-                        Property.class
-                )
+                context.findRepeatableAnnotations(Property.class)
         );
         beforeTestMethod(testContext);
     }
@@ -103,14 +101,16 @@ public class JqwikMicronautExtension extends AbstractMicronautExtension<Lifecycl
     }
 
     @Override
-    protected void resolveTestProperties(final LifecycleContext context, final MicronautTestValue testAnnotationValue,
-                                         final Map<String, Object> testProperties) {
+    protected void resolveTestProperties(
+            final LifecycleContext context, final MicronautTestValue testAnnotationValue,
+            final Map<String, Object> testProperties
+    ) {
         context.optionalContainerClass()
-                .map(context::newInstance)
-                .filter(TestPropertyProvider.class::isInstance)
-                .map(TestPropertyProvider.class::cast)
-                .map(TestPropertyProvider::getProperties)
-                .ifPresent(testProperties::putAll);
+               .map(context::newInstance)
+               .filter(TestPropertyProvider.class::isInstance)
+               .map(TestPropertyProvider.class::cast)
+               .map(TestPropertyProvider::getProperties)
+               .ifPresent(testProperties::putAll);
     }
 
     @Override
@@ -119,10 +119,10 @@ public class JqwikMicronautExtension extends AbstractMicronautExtension<Lifecycl
             return;
         }
         ((PropertyLifecycleContext) context).testInstances()
-                .stream()
-                .filter(e -> e.getClass().equals(specDefinition.getBeanType()))
-                .findAny()
-                .ifPresent(MockInjector.inject(specDefinition));
+                                            .stream()
+                                            .filter(e -> e.getClass().equals(specDefinition.getBeanType()))
+                                            .findAny()
+                                            .ifPresent(MockInjector.inject(specDefinition));
     }
 
     private void runHooks(final Callable<Void> hooks) {
@@ -140,17 +140,15 @@ public class JqwikMicronautExtension extends AbstractMicronautExtension<Lifecycl
     }
 
     /**
-     * Builds a {@link MicronautTestValue} object from the provided class (e.g. by scanning annotations).
+     * Builds a {@link MicronautTestValue} object from the provided context (e.g. by scanning annotations).
      *
-     * @param testClass the class to extract builder configuration from
+     * @param context the container context to extract builder configuration from
      * @return a MicronautTestValue to configure the test application context
      */
-    private MicronautTestValue buildMicronautTestValue(final Class<?> testClass) {
-        return JqwikAnnotationSupport.findContainerAnnotations(testClass, JqwikMicronautTest.class)
-                .stream()
-                .map(this::buildValueObject)
-                .findFirst()
-                .orElse(null);
+    private MicronautTestValue buildMicronautTestValue(final ContainerLifecycleContext context) {
+        return context.findAnnotation(JqwikMicronautTest.class)
+                      .map(this::buildValueObject)
+                      .orElse(null);
     }
 
     private MicronautTestValue buildValueObject(final JqwikMicronautTest micronautTest) {
