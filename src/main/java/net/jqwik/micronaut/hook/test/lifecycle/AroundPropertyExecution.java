@@ -21,6 +21,9 @@ public class AroundPropertyExecution implements AroundPropertyHook {
     @Nonnull
     public PropertyExecutionResult aroundProperty(final PropertyLifecycleContext context,
                                                   final PropertyExecutor property) throws Throwable {
+        if (JqwikMicronautExtension.PER_TRY) {
+            return property.execute();
+        }
         extension.beforePropertyExecution(context);
         return property.executeAndFinally(() -> extension.afterPropertyExecution(context));
     }

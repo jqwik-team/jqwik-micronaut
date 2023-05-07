@@ -24,6 +24,8 @@ import static org.apiguardian.api.API.Status.EXPERIMENTAL;
 @Executable
 @API(status = EXPERIMENTAL, since = "TBD")
 public @interface JqwikMicronautTest {
+    boolean perTry() default false;
+
     Class<?> application() default void.class;
 
     /**

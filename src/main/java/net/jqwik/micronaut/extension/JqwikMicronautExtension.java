@@ -11,6 +11,7 @@ import net.jqwik.api.lifecycle.LifecycleContext;
 import net.jqwik.api.lifecycle.Lifespan;
 import net.jqwik.api.lifecycle.PropertyLifecycleContext;
 import net.jqwik.api.lifecycle.Store;
+import net.jqwik.api.lifecycle.TryLifecycleContext;
 import net.jqwik.engine.support.JqwikAnnotationSupport;
 import net.jqwik.micronaut.annotation.JqwikMicronautTest;
 
@@ -23,6 +24,7 @@ public class JqwikMicronautExtension extends AbstractMicronautExtension<Lifecycl
             Lifespan.RUN,
             JqwikMicronautExtension::new
     );
+    public static boolean PER_TRY;
 
     public ApplicationContext getApplicationContext() {
         return applicationContext;
@@ -102,6 +104,19 @@ public class JqwikMicronautExtension extends AbstractMicronautExtension<Lifecycl
         });
     }
 
+    public void beforeTryExecution(final TryLifecycleContext context) throws Exception {
+        final TestContext testContext = buildTryContext(context);
+        beforeTestExecution(testContext);
+    }
+
+    public void afterTryExecution(final TryLifecycleContext context) {
+        final TestContext testContext = buildTryContext(context);
+        runHooks(() -> {
+            afterTestExecution(testContext);
+            return null;
+        });
+    }
+
     @Override
     protected void resolveTestProperties(final LifecycleContext context, final MicronautTestValue testAnnotationValue,
                                          final Map<String, Object> testProperties) {
@@ -154,6 +169,7 @@ public class JqwikMicronautExtension extends AbstractMicronautExtension<Lifecycl
     }
 
     private MicronautTestValue buildValueObject(final JqwikMicronautTest micronautTest) {
+        PER_TRY = micronautTest.perTry();
         return new MicronautTestValue(
                 micronautTest.application(),
                 micronautTest.environments(),
@@ -170,6 +186,16 @@ public class JqwikMicronautExtension extends AbstractMicronautExtension<Lifecycl
     }
 
     private TestContext buildPropertyContext(final PropertyLifecycleContext context) {
+        return new TestContext(
+                applicationContext,
+                context.containerClass(),
+                context.targetMethod(),
+                context.testInstance(),
+                null // TODO: How to handle exceptions that occur during hook executions?
+        );
+    }
+
+    private TestContext buildTryContext(final TryLifecycleContext context) {
         return new TestContext(
                 applicationContext,
                 context.containerClass(),
