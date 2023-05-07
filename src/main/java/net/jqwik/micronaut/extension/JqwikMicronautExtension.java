@@ -6,17 +6,14 @@ import io.micronaut.test.annotation.MicronautTestValue;
 import io.micronaut.test.context.TestContext;
 import io.micronaut.test.extensions.AbstractMicronautExtension;
 import io.micronaut.test.support.TestPropertyProvider;
-
 import net.jqwik.api.lifecycle.ContainerLifecycleContext;
 import net.jqwik.api.lifecycle.LifecycleContext;
 import net.jqwik.api.lifecycle.Lifespan;
 import net.jqwik.api.lifecycle.PropertyLifecycleContext;
 import net.jqwik.api.lifecycle.Store;
 import net.jqwik.api.lifecycle.TryLifecycleContext;
-import net.jqwik.engine.support.JqwikAnnotationSupport;
 import net.jqwik.micronaut.annotation.JqwikMicronautTest;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
