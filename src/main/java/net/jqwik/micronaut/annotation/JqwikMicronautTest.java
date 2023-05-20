@@ -1,18 +1,19 @@
 package net.jqwik.micronaut.annotation;
 
-import io.micronaut.context.ApplicationContextBuilder;
-import io.micronaut.context.annotation.Executable;
-import io.micronaut.context.annotation.Factory;
-import io.micronaut.test.annotation.TransactionMode;
-import net.jqwik.api.lifecycle.AddLifecycleHook;
-import net.jqwik.micronaut.registrar.JqwikMicronautRegistrar;
-import org.apiguardian.api.API;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import io.micronaut.context.ApplicationContextBuilder;
+import io.micronaut.context.annotation.Executable;
+import io.micronaut.context.annotation.Factory;
+import io.micronaut.test.annotation.TransactionMode;
+import org.apiguardian.api.API;
+
+import net.jqwik.api.lifecycle.AddLifecycleHook;
+import net.jqwik.micronaut.registrar.JqwikMicronautRegistrar;
 
 import static org.apiguardian.api.API.Status.EXPERIMENTAL;
 
@@ -24,7 +25,7 @@ import static org.apiguardian.api.API.Status.EXPERIMENTAL;
 @Executable
 @API(status = EXPERIMENTAL, since = "TBD")
 public @interface JqwikMicronautTest {
-    boolean perTry() default false;
+    boolean perTry() default true;
 
     Class<?> application() default void.class;
 

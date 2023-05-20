@@ -14,7 +14,7 @@ public class AfterAll implements AfterContainerHook {
 
     @Override
     @NonNullApi
-    public void afterContainer(final ContainerLifecycleContext context) throws Throwable {
+    public void afterContainer(final ContainerLifecycleContext context) throws Exception {
         extension.afterContainer(context);
     }
 

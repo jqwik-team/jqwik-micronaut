@@ -1,6 +1,7 @@
-package net.jqwik.micronaut.hook.test.lifecycle;
+package net.jqwik.micronaut.hook.test.lifecycle.properties;
 
 import jakarta.annotation.Nonnull;
+
 import net.jqwik.api.NonNullApi;
 import net.jqwik.api.lifecycle.AroundPropertyHook;
 import net.jqwik.api.lifecycle.PropertyExecutionResult;
@@ -18,8 +19,10 @@ public class AroundPropertyLifecycleMethods implements AroundPropertyHook {
     @Override
     @NonNullApi
     @Nonnull
-    public PropertyExecutionResult aroundProperty(final PropertyLifecycleContext context,
-                                                  final PropertyExecutor property) throws Throwable {
+    public PropertyExecutionResult aroundProperty(
+            final PropertyLifecycleContext context,
+            final PropertyExecutor property
+    ) throws Exception {
         extension.beforeProperty(context);
         return property.executeAndFinally(() -> extension.afterProperty(context));
     }

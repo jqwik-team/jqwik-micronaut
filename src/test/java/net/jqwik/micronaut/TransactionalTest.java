@@ -4,6 +4,7 @@ import io.micronaut.context.ApplicationContext;
 import io.micronaut.transaction.support.TransactionSynchronizationManager;
 import io.micronaut.transaction.test.DefaultTestTransactionExecutionListener;
 import jakarta.inject.Inject;
+
 import net.jqwik.api.Property;
 import net.jqwik.api.lifecycle.AfterProperty;
 import net.jqwik.api.lifecycle.BeforeProperty;
@@ -12,8 +13,8 @@ import net.jqwik.micronaut.annotation.JqwikMicronautTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@JqwikMicronautTest
 @DbProperties
+@JqwikMicronautTest(perTry = false)
 class TransactionalTest {
     @Inject
     private ApplicationContext applicationContext;
