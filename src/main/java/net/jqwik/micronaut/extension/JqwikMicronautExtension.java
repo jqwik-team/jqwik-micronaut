@@ -1,5 +1,6 @@
 package net.jqwik.micronaut.extension;
 
+import java.lang.reflect.AnnotatedElement;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -41,14 +42,12 @@ public class JqwikMicronautExtension extends AbstractMicronautExtension<Lifecycl
 
     public void beforeProperty(final PropertyLifecycleContext context) throws Exception {
         final TestContext testContext = TestContextUtils.buildPropertyContext(applicationContext, context);
-        injectEnclosingTestInstances(context);
-        beforeEach(
+        before(
+                testContext,
                 context,
                 context.testInstance(),
-                context.targetMethod(),
-                context.findRepeatableAnnotations(Property.class)
+                context.targetMethod()
         );
-        beforeTestMethod(testContext);
     }
 
     public void afterProperty(final PropertyLifecycleContext context) {
@@ -101,14 +100,12 @@ public class JqwikMicronautExtension extends AbstractMicronautExtension<Lifecycl
 
     public void beforeTry(final TryLifecycleContext context) throws Exception {
         final TestContext testContext = TestContextUtils.buildTryContext(applicationContext, context);
-        injectEnclosingTestInstances(context);
-        beforeEach(
+        before(
+                testContext,
                 context,
                 context.testInstance(),
-                context.targetMethod(),
-                context.findRepeatableAnnotations(Property.class)
+                context.targetMethod()
         );
-        beforeTestMethod(testContext);
     }
 
     public void afterTry(final TryLifecycleContext context) {
@@ -175,14 +172,42 @@ public class JqwikMicronautExtension extends AbstractMicronautExtension<Lifecycl
 
     @Override
     protected void alignMocks(final LifecycleContext context, final Object instance) {
-        if (specDefinition == null || !(context instanceof PropertyLifecycleContext)) {
+        if (specDefinition == null) {
             return;
         }
-        ((PropertyLifecycleContext) context).testInstances()
-                                            .stream()
-                                            .filter(e -> e.getClass().equals(specDefinition.getBeanType()))
-                                            .findAny()
-                                            .ifPresent(MockInjector.inject(specDefinition));
+        if (context instanceof PropertyLifecycleContext) {
+            ((PropertyLifecycleContext) context).testInstances()
+                                                .stream()
+                                                .filter(e -> e.getClass().equals(specDefinition.getBeanType()))
+                                                .findAny()
+                                                .ifPresent(MockInjector.inject(specDefinition));
+        }
+
+        if (context instanceof TryLifecycleContext) {
+            MockInjector.inject(specDefinition).accept(((TryLifecycleContext) context).testInstance());
+        }
+    }
+
+    private void before(
+            final TestContext testContext,
+            final LifecycleContext context,
+            final Object testInstance,
+            final AnnotatedElement method
+    ) throws Exception {
+        if (context instanceof PropertyLifecycleContext) {
+            ((PropertyLifecycleContext) context).testInstances()
+                                                .forEach(applicationContext::inject);
+        }
+        if (context instanceof TryLifecycleContext) {
+            applicationContext.inject(((TryLifecycleContext) context).testInstance());
+        }
+        beforeEach(
+                context,
+                testInstance,
+                method,
+                context.findRepeatableAnnotations(Property.class)
+        );
+        beforeTestMethod(testContext);
     }
 
     private void runHooks(final Callable<Void> hooks) {
@@ -190,12 +215,6 @@ public class JqwikMicronautExtension extends AbstractMicronautExtension<Lifecycl
             hooks.call();
         } catch (final Exception e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private void injectEnclosingTestInstances(final LifecycleContext lifecycleContext) {
-        if (lifecycleContext instanceof PropertyLifecycleContext) {
-            ((PropertyLifecycleContext) lifecycleContext).testInstances().forEach(applicationContext::inject);
         }
     }
 }
