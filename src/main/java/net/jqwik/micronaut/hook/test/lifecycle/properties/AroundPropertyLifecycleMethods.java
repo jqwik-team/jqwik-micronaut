@@ -8,6 +8,7 @@ import net.jqwik.api.lifecycle.PropertyExecutionResult;
 import net.jqwik.api.lifecycle.PropertyExecutor;
 import net.jqwik.api.lifecycle.PropertyLifecycleContext;
 import net.jqwik.micronaut.extension.JqwikMicronautExtension;
+import net.jqwik.micronaut.hook.test.lifecycle.utils.LifecycleContextUtils;
 
 public class AroundPropertyLifecycleMethods implements AroundPropertyHook {
     private final JqwikMicronautExtension extension;
@@ -23,8 +24,11 @@ public class AroundPropertyLifecycleMethods implements AroundPropertyHook {
             final PropertyLifecycleContext context,
             final PropertyExecutor property
     ) throws Exception {
-        extension.beforeProperty(context);
-        return property.executeAndFinally(() -> extension.afterProperty(context));
+        if (LifecycleContextUtils.isPerProperty(context)) {
+            extension.beforeProperty(context);
+            return property.executeAndFinally(() -> extension.afterProperty(context));
+        }
+        return property.execute();
     }
 
     @Override

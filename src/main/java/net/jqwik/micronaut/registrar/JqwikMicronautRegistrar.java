@@ -1,11 +1,16 @@
 package net.jqwik.micronaut.registrar;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Stream;
+
 import org.apiguardian.api.API;
 
 import net.jqwik.api.NonNullApi;
+import net.jqwik.api.lifecycle.LifecycleHook;
 import net.jqwik.api.lifecycle.PropagationMode;
 import net.jqwik.api.lifecycle.RegistrarHook;
-import net.jqwik.micronaut.extension.JqwikMicronautExtension;
 import net.jqwik.micronaut.hook.Disabled;
 import net.jqwik.micronaut.hook.ParameterResolver;
 import net.jqwik.micronaut.hook.test.lifecycle.AfterAll;
@@ -21,48 +26,45 @@ import net.jqwik.micronaut.hook.test.lifecycle.tries.InterceptBeforeTryMethod;
 
 @API(status = API.Status.INTERNAL)
 public class JqwikMicronautRegistrar implements RegistrarHook {
-    public static Registrar REGISTRAR;
-
-    public static void registerHooks() {
-        registerPropertyHooks();
-        registerTryHooks();
-    }
-
-    private static void registerPropertyHooks() {
-        if (JqwikMicronautExtension.PER_TRY) {
-            return;
-        }
-        REGISTRAR.register(AroundPropertyLifecycleMethods.class, PropagationMode.ALL_DESCENDANTS);
-        REGISTRAR.register(InterceptBeforePropertyMethod.Pre.class, PropagationMode.ALL_DESCENDANTS);
-        REGISTRAR.register(InterceptBeforePropertyMethod.Post.class, PropagationMode.ALL_DESCENDANTS);
-        REGISTRAR.register(InterceptAfterPropertyMethod.Pre.class, PropagationMode.ALL_DESCENDANTS);
-        REGISTRAR.register(InterceptAfterPropertyMethod.Post.class, PropagationMode.ALL_DESCENDANTS);
-        REGISTRAR.register(AroundPropertyExecution.class, PropagationMode.ALL_DESCENDANTS);
-    }
-
-    private static void registerTryHooks() {
-        if (!JqwikMicronautExtension.PER_TRY) {
-            return;
-        }
-        REGISTRAR.register(AroundTryLifecycleMethods.class, PropagationMode.ALL_DESCENDANTS);
-        REGISTRAR.register(AroundTryExecution.class, PropagationMode.ALL_DESCENDANTS);
-        REGISTRAR.register(InterceptBeforeTryMethod.Pre.class, PropagationMode.ALL_DESCENDANTS);
-        REGISTRAR.register(InterceptBeforeTryMethod.Post.class, PropagationMode.ALL_DESCENDANTS);
-        REGISTRAR.register(InterceptAfterTryMethod.Pre.class, PropagationMode.ALL_DESCENDANTS);
-        REGISTRAR.register(InterceptAfterTryMethod.Post.class, PropagationMode.ALL_DESCENDANTS);
-    }
-
     @Override
     @NonNullApi
     public void registerHooks(final Registrar registrar) {
-        JqwikMicronautRegistrar.REGISTRAR = registrar;
-        registerCommonHooks();
+        final List<Class<? extends LifecycleHook>> commonHooks = getCommonHooks();
+        final List<Class<? extends LifecycleHook>> propertyHooks = getPropertyHooks();
+        final List<Class<? extends LifecycleHook>> tryHooks = getTryHooks();
+        Stream.of(commonHooks, propertyHooks, tryHooks)
+              .flatMap(Collection::stream)
+              .forEach(hook -> registrar.register(hook, PropagationMode.ALL_DESCENDANTS));
     }
 
-    private void registerCommonHooks() {
-        REGISTRAR.register(BeforeAll.class, PropagationMode.ALL_DESCENDANTS);
-        REGISTRAR.register(AfterAll.class, PropagationMode.ALL_DESCENDANTS);
-        REGISTRAR.register(ParameterResolver.class, PropagationMode.ALL_DESCENDANTS);
-        REGISTRAR.register(Disabled.class, PropagationMode.ALL_DESCENDANTS);
+    private List<Class<? extends LifecycleHook>> getCommonHooks() {
+        return Arrays.asList(
+                BeforeAll.class,
+                AfterAll.class,
+                ParameterResolver.class,
+                Disabled.class
+        );
+    }
+
+    private List<Class<? extends LifecycleHook>> getPropertyHooks() {
+        return Arrays.asList(
+                AroundPropertyLifecycleMethods.class,
+                InterceptBeforePropertyMethod.Pre.class,
+                InterceptBeforePropertyMethod.Post.class,
+                InterceptAfterPropertyMethod.Pre.class,
+                InterceptAfterPropertyMethod.Post.class,
+                AroundPropertyExecution.class
+        );
+    }
+
+    private List<Class<? extends LifecycleHook>> getTryHooks() {
+        return Arrays.asList(
+                AroundTryLifecycleMethods.class,
+                AroundTryExecution.class,
+                InterceptBeforeTryMethod.Pre.class,
+                InterceptBeforeTryMethod.Post.class,
+                InterceptAfterTryMethod.Pre.class,
+                InterceptAfterTryMethod.Post.class
+        );
     }
 }

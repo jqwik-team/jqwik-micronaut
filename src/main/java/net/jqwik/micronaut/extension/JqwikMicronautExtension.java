@@ -16,8 +16,6 @@ import net.jqwik.api.lifecycle.Lifespan;
 import net.jqwik.api.lifecycle.PropertyLifecycleContext;
 import net.jqwik.api.lifecycle.Store;
 import net.jqwik.api.lifecycle.TryLifecycleContext;
-import net.jqwik.micronaut.annotation.JqwikMicronautTest;
-import net.jqwik.micronaut.registrar.JqwikMicronautRegistrar;
 
 public class JqwikMicronautExtension extends AbstractMicronautExtension<LifecycleContext> {
     public static final Store<JqwikMicronautExtension> STORE = Store.getOrCreate(
@@ -25,25 +23,24 @@ public class JqwikMicronautExtension extends AbstractMicronautExtension<Lifecycl
             Lifespan.RUN,
             JqwikMicronautExtension::new
     );
-    public static boolean PER_TRY;
 
     public ApplicationContext getApplicationContext() {
         return applicationContext;
     }
 
     public void beforeContainer(final ContainerLifecycleContext context) throws Exception {
-        final MicronautTestValue micronautTestValue = buildMicronautTestValue(context);
+        final MicronautTestValue micronautTestValue = TestContextUtils.buildMicronautTestValue(context);
         beforeClass(context, context.optionalContainerClass().orElse(null), micronautTestValue);
-        beforeTestClass(buildContainerContext(context));
+        beforeTestClass(TestContextUtils.buildContainerContext(applicationContext, context));
     }
 
     public void afterContainer(final ContainerLifecycleContext context) throws Exception {
-        afterTestClass(buildContainerContext(context));
+        afterTestClass(TestContextUtils.buildContainerContext(applicationContext, context));
         afterClass(context);
     }
 
     public void beforeProperty(final PropertyLifecycleContext context) throws Exception {
-        final TestContext testContext = buildPropertyContext(context);
+        final TestContext testContext = TestContextUtils.buildPropertyContext(applicationContext, context);
         injectEnclosingTestInstances(context);
         beforeEach(
                 context,
@@ -55,7 +52,7 @@ public class JqwikMicronautExtension extends AbstractMicronautExtension<Lifecycl
     }
 
     public void afterProperty(final PropertyLifecycleContext context) {
-        final TestContext testContext = buildPropertyContext(context);
+        final TestContext testContext = TestContextUtils.buildPropertyContext(applicationContext, context);
         runHooks(() -> {
             afterEach(context);
             afterTestMethod(testContext);
@@ -64,17 +61,17 @@ public class JqwikMicronautExtension extends AbstractMicronautExtension<Lifecycl
     }
 
     public void preBeforePropertyMethod(final PropertyLifecycleContext context) throws Exception {
-        final TestContext testContext = buildPropertyContext(context);
+        final TestContext testContext = TestContextUtils.buildPropertyContext(applicationContext, context);
         beforeSetupTest(testContext);
     }
 
     public void postBeforePropertyMethod(final PropertyLifecycleContext context) throws Exception {
-        final TestContext testContext = buildPropertyContext(context);
+        final TestContext testContext = TestContextUtils.buildPropertyContext(applicationContext, context);
         afterSetupTest(testContext);
     }
 
     public void preAfterPropertyMethod(final PropertyLifecycleContext context) {
-        final TestContext testContext = buildPropertyContext(context);
+        final TestContext testContext = TestContextUtils.buildPropertyContext(applicationContext, context);
         runHooks(() -> {
             beforeCleanupTest(testContext);
             return null;
@@ -82,7 +79,7 @@ public class JqwikMicronautExtension extends AbstractMicronautExtension<Lifecycl
     }
 
     public void postAfterPropertyMethod(final PropertyLifecycleContext context) {
-        final TestContext testContext = buildPropertyContext(context);
+        final TestContext testContext = TestContextUtils.buildPropertyContext(applicationContext, context);
         runHooks(() -> {
             afterCleanupTest(testContext);
             return null;
@@ -90,30 +87,51 @@ public class JqwikMicronautExtension extends AbstractMicronautExtension<Lifecycl
     }
 
     public void beforePropertyExecution(final PropertyLifecycleContext context) throws Exception {
-        final TestContext testContext = buildPropertyContext(context);
+        final TestContext testContext = TestContextUtils.buildPropertyContext(applicationContext, context);
         beforeTestExecution(testContext);
     }
 
     public void afterPropertyExecution(final PropertyLifecycleContext context) {
-        final TestContext testContext = buildPropertyContext(context);
+        final TestContext testContext = TestContextUtils.buildPropertyContext(applicationContext, context);
         runHooks(() -> {
             afterTestExecution(testContext);
             return null;
         });
     }
 
+    public void beforeTry(final TryLifecycleContext context) throws Exception {
+        final TestContext testContext = TestContextUtils.buildTryContext(applicationContext, context);
+        injectEnclosingTestInstances(context);
+        beforeEach(
+                context,
+                context.testInstance(),
+                context.targetMethod(),
+                context.findRepeatableAnnotations(Property.class)
+        );
+        beforeTestMethod(testContext);
+    }
+
+    public void afterTry(final TryLifecycleContext context) {
+        final TestContext testContext = TestContextUtils.buildTryContext(applicationContext, context);
+        runHooks(() -> {
+            afterEach(context);
+            afterTestMethod(testContext);
+            return null;
+        });
+    }
+
     public void preBeforeTryMethod(final TryLifecycleContext context) throws Exception {
-        final TestContext testContext = buildTryContext(context);
+        final TestContext testContext = TestContextUtils.buildTryContext(applicationContext, context);
         beforeSetupTest(testContext);
     }
 
     public void postBeforeTryMethod(final TryLifecycleContext context) throws Exception {
-        final TestContext testContext = buildTryContext(context);
+        final TestContext testContext = TestContextUtils.buildTryContext(applicationContext, context);
         afterSetupTest(testContext);
     }
 
     public void preAfterTryMethod(final TryLifecycleContext context) {
-        final TestContext testContext = buildTryContext(context);
+        final TestContext testContext = TestContextUtils.buildTryContext(applicationContext, context);
         runHooks(() -> {
             beforeCleanupTest(testContext);
             return null;
@@ -121,7 +139,7 @@ public class JqwikMicronautExtension extends AbstractMicronautExtension<Lifecycl
     }
 
     public void postAfterTryMethod(final TryLifecycleContext context) {
-        final TestContext testContext = buildTryContext(context);
+        final TestContext testContext = TestContextUtils.buildTryContext(applicationContext, context);
         runHooks(() -> {
             afterCleanupTest(testContext);
             return null;
@@ -129,12 +147,12 @@ public class JqwikMicronautExtension extends AbstractMicronautExtension<Lifecycl
     }
 
     public void beforeTryExecution(final TryLifecycleContext context) throws Exception {
-        final TestContext testContext = buildTryContext(context);
+        final TestContext testContext = TestContextUtils.buildTryContext(applicationContext, context);
         beforeTestExecution(testContext);
     }
 
     public void afterTryExecution(final TryLifecycleContext context) {
-        final TestContext testContext = buildTryContext(context);
+        final TestContext testContext = TestContextUtils.buildTryContext(applicationContext, context);
         runHooks(() -> {
             afterTestExecution(testContext);
             return null;
@@ -179,65 +197,5 @@ public class JqwikMicronautExtension extends AbstractMicronautExtension<Lifecycl
         if (lifecycleContext instanceof PropertyLifecycleContext) {
             ((PropertyLifecycleContext) lifecycleContext).testInstances().forEach(applicationContext::inject);
         }
-    }
-
-    /**
-     * Builds a {@link MicronautTestValue} object from the provided context (e.g. by scanning annotations).
-     *
-     * @param context the container context to extract builder configuration from
-     * @return a MicronautTestValue to configure the test application context
-     */
-    private MicronautTestValue buildMicronautTestValue(final ContainerLifecycleContext context) {
-        return context.findAnnotation(JqwikMicronautTest.class)
-                      .map(this::buildValueObject)
-                      .orElse(null);
-    }
-
-    private MicronautTestValue buildValueObject(final JqwikMicronautTest micronautTest) {
-        PER_TRY = micronautTest.perTry();
-        JqwikMicronautRegistrar.registerHooks();
-        return new MicronautTestValue(
-                micronautTest.application(),
-                micronautTest.environments(),
-                micronautTest.packages(),
-                micronautTest.propertySources(),
-                micronautTest.rollback(),
-                micronautTest.transactional(),
-                micronautTest.rebuildContext(),
-                micronautTest.contextBuilder(),
-                micronautTest.transactionMode(),
-                micronautTest.startApplication(),
-                micronautTest.resolveParameters()
-        );
-    }
-
-    private TestContext buildPropertyContext(final PropertyLifecycleContext context) {
-        return new TestContext(
-                applicationContext,
-                context.containerClass(),
-                context.targetMethod(),
-                context.testInstance(),
-                null // TODO: How to handle exceptions that occur during hook executions?
-        );
-    }
-
-    private TestContext buildTryContext(final TryLifecycleContext context) {
-        return new TestContext(
-                applicationContext,
-                context.containerClass(),
-                context.targetMethod(),
-                context.testInstance(),
-                null // TODO: How to handle exceptions that occur during hook executions?
-        );
-    }
-
-    private TestContext buildContainerContext(final ContainerLifecycleContext context) {
-        return new TestContext(
-                applicationContext,
-                context.optionalContainerClass().orElse(null),
-                context.optionalElement().orElse(null),
-                null,
-                null
-        );
     }
 }

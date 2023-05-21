@@ -8,6 +8,7 @@ import net.jqwik.api.lifecycle.PropertyExecutionResult;
 import net.jqwik.api.lifecycle.PropertyExecutor;
 import net.jqwik.api.lifecycle.PropertyLifecycleContext;
 import net.jqwik.micronaut.extension.JqwikMicronautExtension;
+import net.jqwik.micronaut.hook.test.lifecycle.utils.LifecycleContextUtils;
 
 public class InterceptBeforePropertyMethod {
     public static class Pre implements AroundPropertyHook {
@@ -24,7 +25,9 @@ public class InterceptBeforePropertyMethod {
                 final PropertyLifecycleContext context,
                 final PropertyExecutor property
         ) throws Exception {
-            micronautExtension.preBeforePropertyMethod(context);
+            if (LifecycleContextUtils.isPerProperty(context)) {
+                micronautExtension.preBeforePropertyMethod(context);
+            }
             return property.execute();
         }
 
@@ -32,6 +35,7 @@ public class InterceptBeforePropertyMethod {
         public int aroundPropertyProximity() {
             return -11;
         }
+
     }
 
     public static class Post implements AroundPropertyHook {
@@ -49,7 +53,9 @@ public class InterceptBeforePropertyMethod {
                 final PropertyLifecycleContext context,
                 final PropertyExecutor property
         ) throws Exception {
-            micronautExtension.postBeforePropertyMethod(context);
+            if (LifecycleContextUtils.isPerProperty(context)) {
+                micronautExtension.postBeforePropertyMethod(context);
+            }
             return property.execute();
         }
 

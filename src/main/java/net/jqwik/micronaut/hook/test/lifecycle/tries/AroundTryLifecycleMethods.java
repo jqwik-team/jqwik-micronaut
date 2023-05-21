@@ -1,15 +1,18 @@
 package net.jqwik.micronaut.hook.test.lifecycle.tries;
 
+import java.util.List;
+
 import jakarta.annotation.Nonnull;
 
 import net.jqwik.api.NonNullApi;
-import net.jqwik.api.lifecycle.AroundPropertyHook;
-import net.jqwik.api.lifecycle.PropertyExecutionResult;
-import net.jqwik.api.lifecycle.PropertyExecutor;
-import net.jqwik.api.lifecycle.PropertyLifecycleContext;
+import net.jqwik.api.lifecycle.AroundTryHook;
+import net.jqwik.api.lifecycle.TryExecutionResult;
+import net.jqwik.api.lifecycle.TryExecutor;
+import net.jqwik.api.lifecycle.TryLifecycleContext;
 import net.jqwik.micronaut.extension.JqwikMicronautExtension;
+import net.jqwik.micronaut.hook.test.lifecycle.utils.LifecycleContextUtils;
 
-public class AroundTryLifecycleMethods implements AroundPropertyHook {
+public class AroundTryLifecycleMethods implements AroundTryHook {
     private final JqwikMicronautExtension extension;
 
     AroundTryLifecycleMethods() {
@@ -19,18 +22,24 @@ public class AroundTryLifecycleMethods implements AroundPropertyHook {
     @Override
     @NonNullApi
     @Nonnull
-    public PropertyExecutionResult aroundProperty(
-            final PropertyLifecycleContext context,
-            final PropertyExecutor property
+    public TryExecutionResult aroundTry(
+            final TryLifecycleContext context,
+            final TryExecutor aTry,
+            final List<Object> parameters
     ) throws Exception {
-        extension.beforeProperty(context);
-        return property.executeAndFinally(() -> extension.afterProperty(context));
+        if (LifecycleContextUtils.isPerProperty(context)) {
+            return aTry.execute(parameters);
+        }
+        extension.beforeTry(context);
+        final TryExecutionResult execute = aTry.execute(parameters);
+        extension.afterTry(context);
+        return execute;
     }
 
     @Override
-    public int aroundPropertyProximity() {
-        /* Property lifecycle methods (@BeforeProperty, @AfterProperty) use -10.
-           Smaller numbers means "further away" from actual invocation of property method.
+    public int aroundTryProximity() {
+        /* Property lifecycle methods (@BeforeTry, @AfterTry) use -10.
+           Smaller numbers means "further away" from actual invocation of try.
            -20 is therefore around the lifecycle methods. */
         return -20;
     }

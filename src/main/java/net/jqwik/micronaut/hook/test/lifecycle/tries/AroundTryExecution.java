@@ -10,6 +10,7 @@ import net.jqwik.api.lifecycle.TryExecutionResult;
 import net.jqwik.api.lifecycle.TryExecutor;
 import net.jqwik.api.lifecycle.TryLifecycleContext;
 import net.jqwik.micronaut.extension.JqwikMicronautExtension;
+import net.jqwik.micronaut.hook.test.lifecycle.utils.LifecycleContextUtils;
 
 public class AroundTryExecution implements AroundTryHook {
     private final JqwikMicronautExtension extension;
@@ -26,6 +27,9 @@ public class AroundTryExecution implements AroundTryHook {
             final TryExecutor aTry,
             final List<Object> parameters
     ) throws Exception {
+        if (LifecycleContextUtils.isPerProperty(context)) {
+            return aTry.execute(parameters);
+        }
         extension.beforeTryExecution(context);
         final TryExecutionResult result = aTry.execute(parameters);
         extension.afterTryExecution(context);
@@ -34,7 +38,7 @@ public class AroundTryExecution implements AroundTryHook {
 
     @Override
     public int aroundTryProximity() {
-        // In-between @BeforeProperty, @AfterProperty and actual property execution
+        // In-between @BeforeTry, @AfterTry and actual try execution
         return -5;
     }
 }
