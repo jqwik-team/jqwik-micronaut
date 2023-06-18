@@ -11,18 +11,18 @@ import net.jqwik.api.NonNullApi;
 import net.jqwik.api.lifecycle.LifecycleHook;
 import net.jqwik.api.lifecycle.PropagationMode;
 import net.jqwik.api.lifecycle.RegistrarHook;
-import net.jqwik.micronaut.internal.hook.Disabled;
-import net.jqwik.micronaut.internal.hook.ParameterResolver;
-import net.jqwik.micronaut.internal.hook.test.lifecycle.AfterAll;
-import net.jqwik.micronaut.internal.hook.test.lifecycle.BeforeAll;
+import net.jqwik.micronaut.internal.hook.test.Disabled;
+import net.jqwik.micronaut.internal.hook.test.ParameterResolver;
+import net.jqwik.micronaut.internal.hook.test.lifecycle.AfterContainer;
+import net.jqwik.micronaut.internal.hook.test.lifecycle.BeforeContainer;
+import net.jqwik.micronaut.internal.hook.test.lifecycle.properties.AroundAfterProperty;
+import net.jqwik.micronaut.internal.hook.test.lifecycle.properties.AroundBeforeProperty;
+import net.jqwik.micronaut.internal.hook.test.lifecycle.properties.AroundProperty;
 import net.jqwik.micronaut.internal.hook.test.lifecycle.properties.AroundPropertyExecution;
-import net.jqwik.micronaut.internal.hook.test.lifecycle.properties.AroundPropertyLifecycleMethods;
-import net.jqwik.micronaut.internal.hook.test.lifecycle.properties.InterceptAfterPropertyMethod;
-import net.jqwik.micronaut.internal.hook.test.lifecycle.properties.InterceptBeforePropertyMethod;
+import net.jqwik.micronaut.internal.hook.test.lifecycle.tries.AroundAfterTry;
+import net.jqwik.micronaut.internal.hook.test.lifecycle.tries.AroundBeforeTry;
+import net.jqwik.micronaut.internal.hook.test.lifecycle.tries.AroundTry;
 import net.jqwik.micronaut.internal.hook.test.lifecycle.tries.AroundTryExecution;
-import net.jqwik.micronaut.internal.hook.test.lifecycle.tries.AroundTryLifecycleMethods;
-import net.jqwik.micronaut.internal.hook.test.lifecycle.tries.InterceptAfterTryMethod;
-import net.jqwik.micronaut.internal.hook.test.lifecycle.tries.InterceptBeforeTryMethod;
 
 @API(status = API.Status.INTERNAL)
 public class JqwikMicronautRegistrar implements RegistrarHook {
@@ -39,8 +39,8 @@ public class JqwikMicronautRegistrar implements RegistrarHook {
 
     private List<Class<? extends LifecycleHook>> getCommonHooks() {
         return Arrays.asList(
-                BeforeAll.class,
-                AfterAll.class,
+                BeforeContainer.class,
+                AfterContainer.class,
                 ParameterResolver.class,
                 Disabled.class
         );
@@ -48,23 +48,23 @@ public class JqwikMicronautRegistrar implements RegistrarHook {
 
     private List<Class<? extends LifecycleHook>> getPropertyHooks() {
         return Arrays.asList(
-                AroundPropertyLifecycleMethods.class,
-                InterceptBeforePropertyMethod.Pre.class,
-                InterceptBeforePropertyMethod.Post.class,
-                InterceptAfterPropertyMethod.Pre.class,
-                InterceptAfterPropertyMethod.Post.class,
+                AroundProperty.class,
+                AroundBeforeProperty.Pre.class,
+                AroundBeforeProperty.Post.class,
+                AroundAfterProperty.Pre.class,
+                AroundAfterProperty.Post.class,
                 AroundPropertyExecution.class
         );
     }
 
     private List<Class<? extends LifecycleHook>> getTryHooks() {
         return Arrays.asList(
-                AroundTryLifecycleMethods.class,
+                AroundTry.class,
                 AroundTryExecution.class,
-                InterceptBeforeTryMethod.Pre.class,
-                InterceptBeforeTryMethod.Post.class,
-                InterceptAfterTryMethod.Pre.class,
-                InterceptAfterTryMethod.Post.class
+                AroundBeforeTry.Pre.class,
+                AroundBeforeTry.Post.class,
+                AroundAfterTry.Pre.class,
+                AroundAfterTry.Post.class
         );
     }
 }

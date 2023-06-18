@@ -12,10 +12,10 @@ import net.jqwik.api.lifecycle.TryLifecycleContext;
 import net.jqwik.micronaut.internal.extension.JqwikMicronautExtension;
 import net.jqwik.micronaut.internal.hook.test.lifecycle.utils.LifecycleContextUtils;
 
-public class AroundTryLifecycleMethods implements AroundTryHook {
+public class AroundTry implements AroundTryHook {
     private final JqwikMicronautExtension extension;
 
-    AroundTryLifecycleMethods() {
+    AroundTry() {
         this.extension = JqwikMicronautExtension.STORE.get();
     }
 

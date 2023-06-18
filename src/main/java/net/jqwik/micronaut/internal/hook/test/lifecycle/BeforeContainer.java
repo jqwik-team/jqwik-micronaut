@@ -5,10 +5,10 @@ import net.jqwik.api.lifecycle.BeforeContainerHook;
 import net.jqwik.api.lifecycle.ContainerLifecycleContext;
 import net.jqwik.micronaut.internal.extension.JqwikMicronautExtension;
 
-public class BeforeAll implements BeforeContainerHook {
+public class BeforeContainer implements BeforeContainerHook {
     private final JqwikMicronautExtension extension;
 
-    BeforeAll() {
+    BeforeContainer() {
         this.extension = JqwikMicronautExtension.STORE.get();
     }
 
@@ -20,7 +20,6 @@ public class BeforeAll implements BeforeContainerHook {
 
     @Override
     public int beforeContainerProximity() {
-        // Run it before @BeforeContainer methods
-        return -20;
+        return -20;     // Run it before @BeforeContainer methods
     }
 }

@@ -10,10 +10,10 @@ import net.jqwik.api.lifecycle.PropertyLifecycleContext;
 import net.jqwik.micronaut.internal.extension.JqwikMicronautExtension;
 import net.jqwik.micronaut.internal.hook.test.lifecycle.utils.LifecycleContextUtils;
 
-public class AroundPropertyLifecycleMethods implements AroundPropertyHook {
+public class AroundProperty implements AroundPropertyHook {
     private final JqwikMicronautExtension extension;
 
-    AroundPropertyLifecycleMethods() {
+    AroundProperty() {
         this.extension = JqwikMicronautExtension.STORE.get();
     }
 

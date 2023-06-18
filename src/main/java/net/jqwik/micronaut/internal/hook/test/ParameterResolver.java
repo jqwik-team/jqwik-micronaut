@@ -1,4 +1,4 @@
-package net.jqwik.micronaut.internal.hook;
+package net.jqwik.micronaut.internal.hook.test;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;

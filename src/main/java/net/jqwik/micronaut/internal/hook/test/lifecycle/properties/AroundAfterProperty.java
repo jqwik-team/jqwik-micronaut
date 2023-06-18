@@ -10,7 +10,7 @@ import net.jqwik.api.lifecycle.PropertyLifecycleContext;
 import net.jqwik.micronaut.internal.extension.JqwikMicronautExtension;
 import net.jqwik.micronaut.internal.hook.test.lifecycle.utils.LifecycleContextUtils;
 
-public class InterceptBeforePropertyMethod {
+public class AroundAfterProperty {
     public static class Pre implements AroundPropertyHook {
         private final JqwikMicronautExtension micronautExtension;
 
@@ -21,25 +21,21 @@ public class InterceptBeforePropertyMethod {
         @Override
         @NonNullApi
         @Nonnull
-        public PropertyExecutionResult aroundProperty(
-                final PropertyLifecycleContext context,
-                final PropertyExecutor property
-        ) throws Exception {
+        public PropertyExecutionResult aroundProperty(final PropertyLifecycleContext context,
+                                                      final PropertyExecutor property) {
             if (LifecycleContextUtils.isPerProperty(context)) {
-                micronautExtension.preBefore(context);
+                return property.executeAndFinally(() -> micronautExtension.preAfter(context));
             }
             return property.execute();
         }
 
         @Override
         public int aroundPropertyProximity() {
-            return -11;
+            return -9;
         }
-
     }
 
     public static class Post implements AroundPropertyHook {
-
         private final JqwikMicronautExtension micronautExtension;
 
         Post() {
@@ -49,19 +45,17 @@ public class InterceptBeforePropertyMethod {
         @Override
         @NonNullApi
         @Nonnull
-        public PropertyExecutionResult aroundProperty(
-                final PropertyLifecycleContext context,
-                final PropertyExecutor property
-        ) throws Exception {
+        public PropertyExecutionResult aroundProperty(final PropertyLifecycleContext context,
+                                                      final PropertyExecutor property) {
             if (LifecycleContextUtils.isPerProperty(context)) {
-                micronautExtension.postBefore(context);
+                return property.executeAndFinally(() -> micronautExtension.postAfter(context));
             }
             return property.execute();
         }
 
         @Override
         public int aroundPropertyProximity() {
-            return -9;
+            return -11;
         }
     }
 }

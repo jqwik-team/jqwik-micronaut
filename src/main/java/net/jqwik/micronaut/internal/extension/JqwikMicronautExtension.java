@@ -32,7 +32,6 @@ public class JqwikMicronautExtension extends AbstractMicronautExtension<Lifecycl
     }
 
     public void before(final MethodLifecycleContext context) throws Exception {
-        context.testInstances().forEach(applicationContext::inject);
         beforeEach(
                 context,
                 context.testInstance(),

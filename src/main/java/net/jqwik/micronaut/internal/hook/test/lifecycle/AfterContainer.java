@@ -5,10 +5,10 @@ import net.jqwik.api.lifecycle.AfterContainerHook;
 import net.jqwik.api.lifecycle.ContainerLifecycleContext;
 import net.jqwik.micronaut.internal.extension.JqwikMicronautExtension;
 
-public class AfterAll implements AfterContainerHook {
+public class AfterContainer implements AfterContainerHook {
     private final JqwikMicronautExtension extension;
 
-    AfterAll() {
+    AfterContainer() {
         this.extension = JqwikMicronautExtension.STORE.get();
     }
 
@@ -20,7 +20,6 @@ public class AfterAll implements AfterContainerHook {
 
     @Override
     public int afterContainerProximity() {
-        // Run it after @AfterContainer methods
-        return -20;
+        return -20;     // Run it after @AfterContainer methods
     }
 }

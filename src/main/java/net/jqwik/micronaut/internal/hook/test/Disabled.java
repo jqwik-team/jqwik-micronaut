@@ -1,4 +1,4 @@
-package net.jqwik.micronaut.internal.hook;
+package net.jqwik.micronaut.internal.hook.test;
 
 import io.micronaut.context.annotation.Requires;
 import jakarta.annotation.Nonnull;
