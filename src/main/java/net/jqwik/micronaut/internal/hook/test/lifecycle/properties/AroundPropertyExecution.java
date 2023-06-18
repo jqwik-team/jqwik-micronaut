@@ -25,8 +25,8 @@ public class AroundPropertyExecution implements AroundPropertyHook {
             final PropertyExecutor property
     ) throws Exception {
         if (LifecycleContextUtils.isPerProperty(context)) {
-            extension.beforePropertyExecution(context);
-            return property.executeAndFinally(() -> extension.afterPropertyExecution(context));
+            extension.beforeExecution(context);
+            return property.executeAndFinally(() -> extension.afterExecution(context));
         }
         return property.execute();
     }

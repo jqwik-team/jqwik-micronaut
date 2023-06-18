@@ -30,9 +30,9 @@ public class AroundTryLifecycleMethods implements AroundTryHook {
         if (LifecycleContextUtils.isPerProperty(context)) {
             return aTry.execute(parameters);
         }
-        extension.beforeTry(context);
+        extension.before(context);
         final TryExecutionResult execute = aTry.execute(parameters);
-        extension.afterTry(context);
+        extension.after(context);
         return execute;
     }
 

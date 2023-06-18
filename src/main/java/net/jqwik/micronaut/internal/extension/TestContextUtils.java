@@ -7,8 +7,7 @@ import io.micronaut.test.annotation.MicronautTestValue;
 import io.micronaut.test.context.TestContext;
 
 import net.jqwik.api.lifecycle.ContainerLifecycleContext;
-import net.jqwik.api.lifecycle.PropertyLifecycleContext;
-import net.jqwik.api.lifecycle.TryLifecycleContext;
+import net.jqwik.api.lifecycle.MethodLifecycleContext;
 import net.jqwik.micronaut.JqwikMicronautTest;
 
 class TestContextUtils {
@@ -24,11 +23,11 @@ class TestContextUtils {
                       .orElse(null);
     }
 
-    static TestContext buildPropertyContext(
+    static TestContext buildContext(
             final ApplicationContext applicationContext,
-            final PropertyLifecycleContext context
+            final MethodLifecycleContext context
     ) {
-        return buildTestContext(
+        return buildContext(
                 applicationContext,
                 context.containerClass(),
                 context.targetMethod(),
@@ -36,23 +35,11 @@ class TestContextUtils {
         );
     }
 
-    static TestContext buildTryContext(
-            final ApplicationContext applicationContext,
-            final TryLifecycleContext context
-    ) {
-        return buildTestContext(
-                applicationContext,
-                context.containerClass(),
-                context.targetMethod(),
-                context.testInstance()
-        );
-    }
-
-    static TestContext buildContainerContext(
+    static TestContext buildContext(
             final ApplicationContext applicationContext,
             final ContainerLifecycleContext context
     ) {
-        return buildTestContext(
+        return buildContext(
                 applicationContext,
                 context.optionalContainerClass().orElse(null),
                 context.optionalElement().orElse(null),
@@ -76,7 +63,7 @@ class TestContextUtils {
         );
     }
 
-    private static TestContext buildTestContext(
+    private static TestContext buildContext(
             final ApplicationContext applicationContext,
             final Class<?> testClass,
             final AnnotatedElement testMethod,

@@ -32,7 +32,7 @@ public class InterceptAfterTryMethod {
                 return aTry.execute(parameters);
             }
             final TryExecutionResult execute = aTry.execute(parameters);
-            micronautExtension.preAfterTryMethod(context);
+            micronautExtension.preAfterMethod(context);
             return execute;
         }
 
@@ -61,7 +61,7 @@ public class InterceptAfterTryMethod {
                 return aTry.execute(parameters);
             }
             final TryExecutionResult execute = aTry.execute(parameters);
-            micronautExtension.postAfterTryMethod(context);
+            micronautExtension.postAfterMethod(context);
             return execute;
         }
 
