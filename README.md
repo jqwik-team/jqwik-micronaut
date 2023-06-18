@@ -1,4 +1,6 @@
-# jqwik Micronaut Support
+[![Java CI with Gradle](https://github.com/jqwik-team/jqwik-micronaut/actions/workflows/gradle.yml/badge.svg)](https://github.com/jqwik-team/jqwik-micronaut/actions/workflows/gradle.yml)
+
+# Jqwik Micronaut Support
 
 This project provides an extension to support testing of Micronaut applications
 with [jqwik](https://jqwik.net).
