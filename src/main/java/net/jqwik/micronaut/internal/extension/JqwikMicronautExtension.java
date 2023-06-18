@@ -1,12 +1,10 @@
 package net.jqwik.micronaut.internal.extension;
 
-import java.lang.reflect.AnnotatedElement;
 import java.util.Map;
 
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.test.annotation.MicronautTestValue;
-import io.micronaut.test.context.TestContext;
 import io.micronaut.test.extensions.AbstractMicronautExtension;
 import io.micronaut.test.support.TestPropertyProvider;
 
@@ -34,53 +32,43 @@ public class JqwikMicronautExtension extends AbstractMicronautExtension<Lifecycl
     }
 
     public void before(final MethodLifecycleContext context) throws Exception {
-        final TestContext testContext = TestContextUtils.buildContext(applicationContext, context);
-        final Object testInstance = context.testInstance();
-        final AnnotatedElement method = context.targetMethod();
         context.testInstances().forEach(applicationContext::inject);
         beforeEach(
                 context,
-                testInstance,
-                method,
+                context.testInstance(),
+                context.targetMethod(),
                 context.findRepeatableAnnotations(Property.class)
         );
-        beforeTestMethod(testContext);
+        beforeTestMethod(TestContextUtils.buildContext(applicationContext, context));
     }
 
     public void preBefore(final MethodLifecycleContext context) throws Exception {
-        final TestContext testContext = TestContextUtils.buildContext(applicationContext, context);
-        beforeSetupTest(testContext);
+        beforeSetupTest(TestContextUtils.buildContext(applicationContext, context));
     }
 
     public void postBefore(final MethodLifecycleContext context) throws Exception {
-        final TestContext testContext = TestContextUtils.buildContext(applicationContext, context);
-        afterSetupTest(testContext);
+        afterSetupTest(TestContextUtils.buildContext(applicationContext, context));
     }
 
     public void preAfter(final MethodLifecycleContext context) throws Exception {
-        final TestContext testContext = TestContextUtils.buildContext(applicationContext, context);
-        beforeCleanupTest(testContext);
+        beforeCleanupTest(TestContextUtils.buildContext(applicationContext, context));
     }
 
     public void postAfter(final MethodLifecycleContext context) throws Exception {
-        final TestContext testContext = TestContextUtils.buildContext(applicationContext, context);
-        afterCleanupTest(testContext);
+        afterCleanupTest(TestContextUtils.buildContext(applicationContext, context));
     }
 
     public void beforeExecution(final MethodLifecycleContext context) throws Exception {
-        final TestContext testContext = TestContextUtils.buildContext(applicationContext, context);
-        beforeTestExecution(testContext);
+        beforeTestExecution(TestContextUtils.buildContext(applicationContext, context));
     }
 
     public void afterExecution(final MethodLifecycleContext context) throws Exception {
-        final TestContext testContext = TestContextUtils.buildContext(applicationContext, context);
-        afterTestExecution(testContext);
+        afterTestExecution(TestContextUtils.buildContext(applicationContext, context));
     }
 
     public void after(final MethodLifecycleContext context) throws Exception {
-        final TestContext testContext = TestContextUtils.buildContext(applicationContext, context);
         afterEach(context);
-        afterTestMethod(testContext);
+        afterTestMethod(TestContextUtils.buildContext(applicationContext, context));
     }
 
     public void afterContainer(final ContainerLifecycleContext context) throws Exception {
