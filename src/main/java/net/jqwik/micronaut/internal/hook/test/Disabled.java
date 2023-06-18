@@ -18,7 +18,7 @@ public class Disabled implements SkipExecutionHook {
                 .anyMatch(e -> !applicationContext.containsProperties(e));
 
         if (isAnyPropertyMissing) {
-            return SkipResult.skip("@Requires contains a property that doesn't exists!");
+            return SkipResult.skip("Expected property used in @Requires doesn't exist!");
         }
         return SkipResult.doNotSkip();
     }
