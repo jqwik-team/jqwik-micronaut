@@ -26,7 +26,7 @@ public class InterceptBeforePropertyMethod {
                 final PropertyExecutor property
         ) throws Exception {
             if (LifecycleContextUtils.isPerProperty(context)) {
-                micronautExtension.preBeforeMethod(context);
+                micronautExtension.preBefore(context);
             }
             return property.execute();
         }
@@ -54,7 +54,7 @@ public class InterceptBeforePropertyMethod {
                 final PropertyExecutor property
         ) throws Exception {
             if (LifecycleContextUtils.isPerProperty(context)) {
-                micronautExtension.postBeforeMethod(context);
+                micronautExtension.postBefore(context);
             }
             return property.execute();
         }

@@ -24,7 +24,7 @@ public class InterceptAfterPropertyMethod {
         public PropertyExecutionResult aroundProperty(final PropertyLifecycleContext context,
                                                       final PropertyExecutor property) {
             if (LifecycleContextUtils.isPerProperty(context)) {
-                return property.executeAndFinally(() -> micronautExtension.preAfterMethod(context));
+                return property.executeAndFinally(() -> micronautExtension.preAfter(context));
             }
             return property.execute();
         }
@@ -48,7 +48,7 @@ public class InterceptAfterPropertyMethod {
         public PropertyExecutionResult aroundProperty(final PropertyLifecycleContext context,
                                                       final PropertyExecutor property) {
             if (LifecycleContextUtils.isPerProperty(context)) {
-                return property.executeAndFinally(() -> micronautExtension.postAfterMethod(context));
+                return property.executeAndFinally(() -> micronautExtension.postAfter(context));
             }
             return property.execute();
         }

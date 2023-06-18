@@ -29,7 +29,7 @@ public class InterceptBeforeTryMethod {
                 final List<Object> parameters
         ) throws Exception {
             if (LifecycleContextUtils.isPerTry(context)) {
-                micronautExtension.preBeforeMethod(context);
+                micronautExtension.preBefore(context);
             }
             return aTry.execute(parameters);
         }
@@ -58,7 +58,7 @@ public class InterceptBeforeTryMethod {
                 final List<Object> parameters
         ) throws Exception {
             if (LifecycleContextUtils.isPerTry(context)) {
-                micronautExtension.postBeforeMethod(context);
+                micronautExtension.postBefore(context);
             }
             return aTry.execute(parameters);
         }

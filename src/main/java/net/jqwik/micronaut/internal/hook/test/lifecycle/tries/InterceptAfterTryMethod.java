@@ -27,12 +27,12 @@ public class InterceptAfterTryMethod {
                 final TryLifecycleContext context,
                 final TryExecutor aTry,
                 final List<Object> parameters
-        ) {
+        ) throws Exception {
             if (LifecycleContextUtils.isPerProperty(context)) {
                 return aTry.execute(parameters);
             }
             final TryExecutionResult execute = aTry.execute(parameters);
-            micronautExtension.preAfterMethod(context);
+            micronautExtension.preAfter(context);
             return execute;
         }
 
@@ -56,12 +56,12 @@ public class InterceptAfterTryMethod {
                 final TryLifecycleContext context,
                 final TryExecutor aTry,
                 final List<Object> parameters
-        ) {
+        ) throws Exception {
             if (LifecycleContextUtils.isPerProperty(context)) {
                 return aTry.execute(parameters);
             }
             final TryExecutionResult execute = aTry.execute(parameters);
-            micronautExtension.postAfterMethod(context);
+            micronautExtension.postAfter(context);
             return execute;
         }
 
