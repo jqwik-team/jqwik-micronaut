@@ -11,6 +11,10 @@ import net.jqwik.micronaut.internal.extension.JqwikMicronautExtension;
 import net.jqwik.micronaut.internal.hook.test.lifecycle.utils.LifecycleContextUtils;
 
 public class AroundAfterProperty {
+
+    private AroundAfterProperty() {
+    }
+
     public static class Pre implements AroundPropertyHook {
         private final JqwikMicronautExtension micronautExtension;
 

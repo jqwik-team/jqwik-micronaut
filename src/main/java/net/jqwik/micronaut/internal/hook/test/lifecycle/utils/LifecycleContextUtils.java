@@ -7,6 +7,9 @@ public class LifecycleContextUtils {
     private static final String ANNOTATION_NOT_FOUND =
             "Expected '@JqwikMicronautTest' to be present in the test class!";
 
+    private LifecycleContextUtils() {
+    }
+
     public static boolean isPerProperty(final LifecycleContext context) {
         return !isPerTry(context);
     }

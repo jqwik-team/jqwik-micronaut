@@ -11,6 +11,10 @@ import net.jqwik.api.lifecycle.MethodLifecycleContext;
 import net.jqwik.micronaut.JqwikMicronautTest;
 
 class TestContextUtils {
+
+    private TestContextUtils() {
+    }
+
     /**
      * Builds a {@link MicronautTestValue} object from the provided context (e.g. by scanning annotations).
      *

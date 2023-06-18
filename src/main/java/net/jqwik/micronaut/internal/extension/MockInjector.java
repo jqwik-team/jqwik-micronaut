@@ -15,6 +15,8 @@ import java.util.stream.Stream;
 import io.micronaut.inject.BeanDefinition;
 import io.micronaut.test.annotation.MockBean;
 
+import net.jqwik.api.JqwikException;
+
 class MockInjector {
     private MockInjector() {
 
@@ -71,7 +73,7 @@ class MockInjector {
         if (accessibleObject instanceof Method) {
             return new AbstractMap.SimpleEntry<>(accessibleObject, () -> ((Method) accessibleObject).invoke(specInstance));
         }
-        throw new RuntimeException();
+        throw new JqwikException("Expected mock to be either Field or Method!");
     }
 
     private static void injectMock(final Object specInstance, final Field fieldToInject,
@@ -81,7 +83,7 @@ class MockInjector {
         try {
             fieldToInject.set(specInstance, mockProvider.getValue().call());
         } catch (final Exception ex) {
-            throw new RuntimeException(ex);
+            throw new JqwikException("Failed to inject mock!", ex);
         }
     }
 }

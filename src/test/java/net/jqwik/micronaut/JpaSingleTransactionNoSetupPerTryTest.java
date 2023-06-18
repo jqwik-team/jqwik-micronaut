@@ -29,7 +29,6 @@ class JpaSingleTransactionNoSetupPerTryTest {
 
     @Property(tries = 10)
     void testPersistOne() {
-        System.out.println("#### testPersistOne");
         final Book book = new Book();
         book.setTitle("The Stand");
         entityManager.persist(book);
