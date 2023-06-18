@@ -30,6 +30,7 @@ dependencies {
     api("net.jqwik:jqwik:${jqwikVersion}")
     implementation('io.micronaut.test:micronaut-test-core:3.9.2')
     implementation('io.micronaut:micronaut-context:3.8.9')
+    implementation 'jakarta.annotation:jakarta.annotation-api:2.1.1'
     implementation 'org.mockito:mockito-core:5.3.0'
 
     testImplementation("io.micronaut:micronaut-http-client:3.8.9")
