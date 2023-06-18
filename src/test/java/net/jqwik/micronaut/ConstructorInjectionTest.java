@@ -30,6 +30,11 @@ class ConstructorInjectionTest {
     }
 
     @Property(tries = 1)
+    void testPropertyInjected(final AppBean appBean) {
+        assertThat(appBean).isNotNull();
+    }
+
+    @Property(tries = 1)
     void testConstructorInjected() {
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(appBean).isNotNull();

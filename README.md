@@ -3,7 +3,7 @@
 # Jqwik Micronaut Support
 
 This project provides an extension to support testing of Micronaut applications
-with [jqwik](https://jqwik.net).
+with [Jqwik](https://jqwik.net).
 
 ```mermaid
 ---
@@ -53,10 +53,6 @@ click MTEJ "https://github.com/jqwik-team/jqwik-micronaut" _blank
 click MF "https://micronaut-projects.github.io/micronaut-test/latest/guide" _blank
 ```
 
-<!-- use `doctoc --maxlevel 3 README.md` to recreate the TOC -->
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
 ### Table of Contents
 
 - [How to Install](#how-to-install)
@@ -71,15 +67,11 @@ click MF "https://micronaut-projects.github.io/micronaut-test/latest/guide" _bla
 - [Release Notes](#release-notes)
     - [1.0.0](#100)
 
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
 ## How to Install
 
 ### Gradle
 
-Follow the
-[instructions here](https://jqwik.net/docs/current/user-guide.html#gradle)
-and add the following dependency to your `build.gradle` file:
+Follow the [instructions here](https://jqwik.net/docs/current/user-guide.html#gradle) and add the following dependency to your `build.gradle` file:
 
 ```groovy
 dependencies {
@@ -90,18 +82,13 @@ dependencies {
 }
 ```
 
-You can look at a
-[sample project](https://github.com/jlink/jqwik-samples/tree/master/jqwik-micronaut-gradle)
-using Jqwik, Micronaut and Gradle.
+You can look at a [sample project TBD]() using Jqwik, Micronaut and Gradle.
 
 ### Maven
 
-Follow the
-[instructions here](https://jqwik.net/docs/current/user-guide.html#maven)
-and add the following dependency to your `pom.xml` file:
+Follow the [instructions here](https://jqwik.net/docs/current/user-guide.html#maven) and add the following dependency to your `pom.xml` file:
 
 ```xml
-
 <xml>
     <dependency>
         <groupId>io.micronaut</groupId>
@@ -129,8 +116,7 @@ and add the following dependency to your `pom.xml` file:
 
 ### Supported Micronaut Versions
 
-You have to provide your own version of Micronaut through Gradle or Maven. The
-_jqwik-micronaut_ library has been tested with versions:
+You have to provide your own version of Micronaut through Gradle or Maven. The _jqwik-micronaut_ library has been tested with versions:
 
 - `3.8.9`.
 
@@ -138,102 +124,137 @@ Please report any compatibility issues you stumble upon.
 
 ## Standard Usage
 
-To enable autowiring of a Micronaut application context or beans you just have
-to add `@JqwikMicronautTest` to your test container class:
+To enable autowiring of a Micronaut application context or beans you just have to add `@JqwikMicronautTest` to your test container class:
 
 ```java
-import net.jqwik.api.*;
-import net.jqwik.api.constraints.*;
-import net.jqwik.api.lifecycle.*;
+import jakarta.inject.Inject;
+
+import net.jqwik.api.ForAll;
+import net.jqwik.api.Property;
+import net.jqwik.api.constraints.AlphaChars;
+import net.jqwik.api.constraints.StringLength;
+
+import org.assertj.core.api.Assertions;
 
 @JqwikMicronautTest
 class MyMicronautProperties {
     @Inject
     private MyMicronautBean myMicronaut;
 
-    @Property
-    void nameIsAddedToHello(@ForAll @AlphaChars @StringLength(min = 1) String name) {
-        String greeting = myMicronaut.sayHello(name);
-        Assertions.assertTrue(greeting.contains(name));
+    @Property(tries = 1)
+    void nameIsAddedToHello(@ForAll @AlphaChars @StringLength(min = 1) final String name) {
+        final String greeting = myMicronaut.sayHello(name);
+        Assertions.assertThat(greeting).contains(name);
     }
 }
 ```
 
-Configuration and autowiring of values is delegated to Micronaut's own test
-framework. Therefore, all [integration testing annotations]() can be used. This
-is also true for [standard annotation support]().
+Configuration and autowiring of values is delegated to Micronaut's own test framework and `@JqwikMicronautTest` supports all parameters that `@MicronautTest` comes with (see the [Javadocs](https://micronaut-projects.github.io/micronaut-test/3.9.2/api/io/micronaut/test/extensions/junit5/annotation/MicronautTest.html)).
 
 ### Lifecycle
 
 Micronaut will recreate its application context for each annotated class.
-That means, that
+That means:
 
 - Singleton beans will only be created once for all tests of one test container
   class.
-- Properties and tries within the same class _share mutual state_ of all
-  Micronaut-controlled beans.
+- Properties and tries within the same class _share mutual state_ of all Micronaut-controlled beans.
 
-If you want a property to recreate the app context for each try, you have to
-use the property parameter _perTry = true_.
-Compare the following two properties:
+By default, a property will recreate the app context for each try. If you want to change this, you have to use the property parameter _perTry = true_. For example:
 
 ```java
+import io.micronaut.test.annotation.TransactionMode;
 
-@JqwikMicronautSupport
-@ContextConfiguration(classes = MyMicronautConfig.class)
-class MyMicronautProperties {
+import jakarta.inject.Inject;
 
-    @Property(tries = 10)
-    void counterIsCountingUp(@Autowired MyCounter counter) {
-        counter.inc();
-        // Prints out 1, 2, 3 ... 10
-        System.out.println(counter.value());
+import net.jqwik.api.Property;
+import net.jqwik.api.lifecycle.AfterProperty;
+import net.jqwik.api.lifecycle.BeforeProperty;
+import net.jqwik.micronaut.JqwikMicronautTest;
+
+import org.assertj.core.api.Assertions;
+
+import javax.persistence.EntityManager;
+
+@JqwikMicronautTest(transactionMode = TransactionMode.SINGLE_TRANSACTION, perTry = false)
+class MyMicronautTest {
+    @Inject
+    private EntityManager entityManager;
+
+    @BeforeProperty
+    void setUpOne() {
+        final Book book = new Book();
+        book.setTitle("The Stand");
+        entityManager.persist(book);
     }
 
-    @Property(tries = 10)
-    @DirtiesContext
-    void counterIsAlways1(@Autowired MyCounter counter) {
-        counter.inc();
-        // Prints out 1, 1, 1 ... 1
-        System.out.println(counter.value());
+    @BeforeProperty
+    void setUpTwo() {
+        final Book book = new Book();
+        book.setTitle("The Shining");
+        entityManager.persist(book);
+    }
+
+    @AfterProperty
+    void tearDown() {
+        // check setups were rolled back. By default, Micronaut will rollback txs after tests execution.
+        final CriteriaQuery<Book> query = entityManager.getCriteriaBuilder().createQuery(Book.class);
+        query.from(Book.class);
+        Assertions.assertThat(entityManager.createQuery(query).getResultList()).isEmpty();
+    }
+
+    @Property(tries = 1)
+    void testPersistOne() {
+        final CriteriaQuery<Book> query = entityManager.getCriteriaBuilder().createQuery(Book.class);
+        query.from(Book.class);
+        Assertions.assertThat(entityManager.createQuery(query).getResultList().size()).isEqualTo(2);
+    }
+
+    @Property(tries = 1)
+    void testPersistTwo() {
+        final CriteriaQuery<Book> query = entityManager.getCriteriaBuilder().createQuery(Book.class);
+        query.from(Book.class);
+        Assertions.assertThat(entityManager.createQuery(query).getResultList().size()).isEqualTo(2);
     }
 }
 ```
 
 ### Parameter Resolution of Autowired Beans
 
-Autowired beans will be injected as parameters in example and property methods,
-in all
-[lifecycle methods](https://jqwik.net/docs/current/user-guide.html#annotated-lifecycle-methods)
-and also in the test container class's constructor - if there is only one:
+Autowired beans will be injected as parameters in example and property methods, in all [lifecycle methods](https://jqwik.net/docs/current/user-guide.html#annotated-lifecycle-methods) and also in the test container class's constructor - if there is only one:
 
 ```java
+import jakarta.inject.Inject;
 
-@JqwikMicronautSupport
-@ContextConfiguration(classes = MyMicronautConfig.class)
-class MyOtherMicronautProperties {
-    @Autowired
-    MyOtherMicronautProperties(MyMicronautBean micronautBean) {
-        Assertions.assertNotNull(micronautBean);
+import net.jqwik.api.Property;
+import net.jqwik.api.lifecycle.BeforeProperty;
+import net.jqwik.micronaut.JqwikMicronautTest;
+
+import org.assertj.core.api.Assertions;
+import org.springframework.beans.factory.annotation.Autowired;
+
+@JqwikMicronautTest
+class MyOtherMicronautTest {
+    @Inject
+    MyOtherMicronautTest(final AppBean appBean) {
+        Assertions.assertThat(appBean).isNotNull();
     }
 
     @BeforeProperty
-    void beforeProperty(@Autowired MyMicronautBean micronautBean) {
-        Assertions.assertNotNull(micronautBean);
+    void injectStatic(final AppBean appBean) {
+        Assertions.assertThat(appBean).isNotNull();
     }
 
-    @Property
-    void beanIsInjected(@Autowired MyMicronautBean micronautBean) {
-        Assertions.assertNotNull(micronautBean);
+    @Property(tries = 1)
+    void testPropertyInjected(final AppBean appBean) {
+        Assertions.assertThat(appBean).isNotNull();
     }
 }
 ```
 
 ### Micronaut JUnit Jupiter Testing Annotations
 
-_jqwik_'s Micronaut support is trying to mostly simulate how Micronaut's native
-Jupiter support works. Therefore, some of that stuff also works, but a few
-things do not.
+_jqwik_'s Micronaut support is trying to mostly simulate how Micronaut's native Jupiter support works. Therefore, some of that stuff also works, but a few things do not.
 
 ## Shortcomings
 
