@@ -1,4 +1,4 @@
-package net.jqwik.micronaut.annotation;
+package net.jqwik.micronaut;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -13,7 +13,7 @@ import io.micronaut.test.annotation.TransactionMode;
 import org.apiguardian.api.API;
 
 import net.jqwik.api.lifecycle.AddLifecycleHook;
-import net.jqwik.micronaut.registrar.JqwikMicronautRegistrar;
+import net.jqwik.micronaut.internal.registrar.JqwikMicronautRegistrar;
 
 import static org.apiguardian.api.API.Status.EXPERIMENTAL;
 

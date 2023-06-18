@@ -1,9 +1,9 @@
-package net.jqwik.micronaut.hook.test.lifecycle;
+package net.jqwik.micronaut.internal.hook.test.lifecycle;
 
 import net.jqwik.api.NonNullApi;
 import net.jqwik.api.lifecycle.AfterContainerHook;
 import net.jqwik.api.lifecycle.ContainerLifecycleContext;
-import net.jqwik.micronaut.extension.JqwikMicronautExtension;
+import net.jqwik.micronaut.internal.extension.JqwikMicronautExtension;
 
 public class AfterAll implements AfterContainerHook {
     private final JqwikMicronautExtension extension;

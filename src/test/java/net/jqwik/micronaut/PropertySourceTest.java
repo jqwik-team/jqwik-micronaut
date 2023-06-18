@@ -1,7 +1,6 @@
 package net.jqwik.micronaut;
 
 import net.jqwik.api.Property;
-import net.jqwik.micronaut.annotation.JqwikMicronautTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

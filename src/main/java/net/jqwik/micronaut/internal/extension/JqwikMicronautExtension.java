@@ -1,4 +1,4 @@
-package net.jqwik.micronaut.extension;
+package net.jqwik.micronaut.internal.extension;
 
 import java.lang.reflect.AnnotatedElement;
 import java.util.Map;

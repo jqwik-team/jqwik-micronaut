@@ -1,4 +1,4 @@
-package net.jqwik.micronaut.hook.test.lifecycle.properties;
+package net.jqwik.micronaut.internal.hook.test.lifecycle.properties;
 
 import jakarta.annotation.Nonnull;
 
@@ -7,13 +7,13 @@ import net.jqwik.api.lifecycle.AroundPropertyHook;
 import net.jqwik.api.lifecycle.PropertyExecutionResult;
 import net.jqwik.api.lifecycle.PropertyExecutor;
 import net.jqwik.api.lifecycle.PropertyLifecycleContext;
-import net.jqwik.micronaut.extension.JqwikMicronautExtension;
-import net.jqwik.micronaut.hook.test.lifecycle.utils.LifecycleContextUtils;
+import net.jqwik.micronaut.internal.extension.JqwikMicronautExtension;
+import net.jqwik.micronaut.internal.hook.test.lifecycle.utils.LifecycleContextUtils;
 
-public class AroundPropertyExecution implements AroundPropertyHook {
+public class AroundPropertyLifecycleMethods implements AroundPropertyHook {
     private final JqwikMicronautExtension extension;
 
-    AroundPropertyExecution() {
+    AroundPropertyLifecycleMethods() {
         this.extension = JqwikMicronautExtension.STORE.get();
     }
 
@@ -25,15 +25,17 @@ public class AroundPropertyExecution implements AroundPropertyHook {
             final PropertyExecutor property
     ) throws Exception {
         if (LifecycleContextUtils.isPerProperty(context)) {
-            extension.beforePropertyExecution(context);
-            return property.executeAndFinally(() -> extension.afterPropertyExecution(context));
+            extension.beforeProperty(context);
+            return property.executeAndFinally(() -> extension.afterProperty(context));
         }
         return property.execute();
     }
 
     @Override
     public int aroundPropertyProximity() {
-        // In-between @BeforeProperty, @AfterProperty and actual property execution
-        return -5;
+        /* Property lifecycle methods (@BeforeProperty, @AfterProperty) use -10.
+           Smaller numbers means "further away" from actual invocation of property method.
+           -20 is therefore around the lifecycle methods. */
+        return -20;
     }
 }

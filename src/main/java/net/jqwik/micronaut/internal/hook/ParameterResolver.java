@@ -1,4 +1,12 @@
-package net.jqwik.micronaut.hook;
+package net.jqwik.micronaut.internal.hook;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Executable;
+import java.lang.reflect.Parameter;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.Qualifier;
@@ -12,21 +20,14 @@ import io.micronaut.core.util.StringUtils;
 import io.micronaut.inject.ExecutableMethod;
 import io.micronaut.inject.qualifiers.Qualifiers;
 import jakarta.annotation.Nonnull;
+
 import net.jqwik.api.JqwikException;
 import net.jqwik.api.NonNullApi;
 import net.jqwik.api.lifecycle.LifecycleContext;
 import net.jqwik.api.lifecycle.ParameterResolutionContext;
 import net.jqwik.api.lifecycle.ResolveParameterHook;
 import net.jqwik.api.lifecycle.TryLifecycleContext;
-import net.jqwik.micronaut.extension.JqwikMicronautExtension;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Executable;
-import java.lang.reflect.Parameter;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import net.jqwik.micronaut.internal.extension.JqwikMicronautExtension;
 
 public class ParameterResolver implements ResolveParameterHook {
     @Override

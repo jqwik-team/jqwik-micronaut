@@ -3,9 +3,9 @@ package net.jqwik.micronaut;
 import io.micronaut.runtime.EmbeddedApplication;
 import io.micronaut.test.annotation.MockBean;
 import jakarta.inject.Inject;
+
 import net.jqwik.api.ForAll;
 import net.jqwik.api.Property;
-import net.jqwik.micronaut.annotation.JqwikMicronautTest;
 import net.jqwik.micronaut.beans.AppBean;
 
 import static org.assertj.core.api.Assertions.assertThat;

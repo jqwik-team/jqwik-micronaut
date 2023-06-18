@@ -1,7 +1,4 @@
-package net.jqwik.micronaut.extension;
-
-import io.micronaut.inject.BeanDefinition;
-import io.micronaut.test.annotation.MockBean;
+package net.jqwik.micronaut.internal.extension;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
@@ -14,6 +11,9 @@ import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import io.micronaut.inject.BeanDefinition;
+import io.micronaut.test.annotation.MockBean;
 
 class MockInjector {
     private MockInjector() {

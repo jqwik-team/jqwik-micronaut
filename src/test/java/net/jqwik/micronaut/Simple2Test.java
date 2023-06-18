@@ -3,8 +3,8 @@ package net.jqwik.micronaut;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.util.StringUtils;
 import jakarta.inject.Inject;
+
 import net.jqwik.api.Property;
-import net.jqwik.micronaut.annotation.JqwikMicronautTest;
 import net.jqwik.micronaut.beans.SimpleService;
 
 import static org.assertj.core.api.Assertions.assertThat;

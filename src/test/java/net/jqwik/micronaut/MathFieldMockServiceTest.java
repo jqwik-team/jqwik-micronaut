@@ -2,8 +2,8 @@ package net.jqwik.micronaut;
 
 import io.micronaut.test.annotation.MockBean;
 import jakarta.inject.Inject;
+
 import net.jqwik.api.Example;
-import net.jqwik.micronaut.annotation.JqwikMicronautTest;
 import net.jqwik.micronaut.beans.math.MathService;
 import net.jqwik.micronaut.beans.math.MathServiceImpl;
 

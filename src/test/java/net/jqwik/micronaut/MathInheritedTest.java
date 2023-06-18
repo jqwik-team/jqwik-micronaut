@@ -1,10 +1,10 @@
 package net.jqwik.micronaut;
 
 import jakarta.inject.Inject;
-import net.jqwik.api.Property;
-import net.jqwik.micronaut.annotation.JqwikMicronautTest;
-import net.jqwik.micronaut.beans.math.MathService;
 import org.assertj.core.api.Assertions;
+
+import net.jqwik.api.Property;
+import net.jqwik.micronaut.beans.math.MathService;
 
 class MathInheritedTest extends BaseTest {
     @Inject

@@ -1,4 +1,4 @@
-package net.jqwik.micronaut.hook.test.lifecycle.tries;
+package net.jqwik.micronaut.internal.hook.test.lifecycle.tries;
 
 import java.util.List;
 
@@ -9,8 +9,8 @@ import net.jqwik.api.lifecycle.AroundTryHook;
 import net.jqwik.api.lifecycle.TryExecutionResult;
 import net.jqwik.api.lifecycle.TryExecutor;
 import net.jqwik.api.lifecycle.TryLifecycleContext;
-import net.jqwik.micronaut.extension.JqwikMicronautExtension;
-import net.jqwik.micronaut.hook.test.lifecycle.utils.LifecycleContextUtils;
+import net.jqwik.micronaut.internal.extension.JqwikMicronautExtension;
+import net.jqwik.micronaut.internal.hook.test.lifecycle.utils.LifecycleContextUtils;
 
 public class InterceptBeforeTryMethod {
     public static class Pre implements AroundTryHook {

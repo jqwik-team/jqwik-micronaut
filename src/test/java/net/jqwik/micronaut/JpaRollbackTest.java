@@ -9,7 +9,6 @@ import jakarta.inject.Inject;
 
 import net.jqwik.api.Property;
 import net.jqwik.micronaut.annotation.DbProperties;
-import net.jqwik.micronaut.annotation.JqwikMicronautTest;
 import net.jqwik.micronaut.beans.Book;
 
 import static org.assertj.core.api.Assertions.assertThat;

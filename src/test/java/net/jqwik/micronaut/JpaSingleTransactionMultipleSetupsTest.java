@@ -10,7 +10,6 @@ import net.jqwik.api.Property;
 import net.jqwik.api.lifecycle.AfterProperty;
 import net.jqwik.api.lifecycle.BeforeProperty;
 import net.jqwik.micronaut.annotation.DbProperties;
-import net.jqwik.micronaut.annotation.JqwikMicronautTest;
 import net.jqwik.micronaut.beans.Book;
 
 import static org.assertj.core.api.Assertions.assertThat;

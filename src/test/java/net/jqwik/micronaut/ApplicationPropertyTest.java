@@ -1,17 +1,17 @@
 package net.jqwik.micronaut;
 
+import java.util.Map;
+import java.util.Optional;
+
 import io.micronaut.context.annotation.Value;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.runtime.EmbeddedApplication;
 import io.micronaut.test.support.TestPropertyProvider;
 import jakarta.inject.Inject;
-import net.jqwik.api.Property;
-import net.jqwik.micronaut.annotation.JqwikMicronautTest;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.util.Maps;
 
-import java.util.Map;
-import java.util.Optional;
+import net.jqwik.api.Property;
 
 @JqwikMicronautTest
 @io.micronaut.context.annotation.Property(name = "test.class.property", value = "Hello world!")

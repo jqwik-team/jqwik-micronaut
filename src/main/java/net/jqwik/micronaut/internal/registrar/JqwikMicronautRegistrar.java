@@ -1,4 +1,4 @@
-package net.jqwik.micronaut.registrar;
+package net.jqwik.micronaut.internal.registrar;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -11,18 +11,18 @@ import net.jqwik.api.NonNullApi;
 import net.jqwik.api.lifecycle.LifecycleHook;
 import net.jqwik.api.lifecycle.PropagationMode;
 import net.jqwik.api.lifecycle.RegistrarHook;
-import net.jqwik.micronaut.hook.Disabled;
-import net.jqwik.micronaut.hook.ParameterResolver;
-import net.jqwik.micronaut.hook.test.lifecycle.AfterAll;
-import net.jqwik.micronaut.hook.test.lifecycle.BeforeAll;
-import net.jqwik.micronaut.hook.test.lifecycle.properties.AroundPropertyExecution;
-import net.jqwik.micronaut.hook.test.lifecycle.properties.AroundPropertyLifecycleMethods;
-import net.jqwik.micronaut.hook.test.lifecycle.properties.InterceptAfterPropertyMethod;
-import net.jqwik.micronaut.hook.test.lifecycle.properties.InterceptBeforePropertyMethod;
-import net.jqwik.micronaut.hook.test.lifecycle.tries.AroundTryExecution;
-import net.jqwik.micronaut.hook.test.lifecycle.tries.AroundTryLifecycleMethods;
-import net.jqwik.micronaut.hook.test.lifecycle.tries.InterceptAfterTryMethod;
-import net.jqwik.micronaut.hook.test.lifecycle.tries.InterceptBeforeTryMethod;
+import net.jqwik.micronaut.internal.hook.Disabled;
+import net.jqwik.micronaut.internal.hook.ParameterResolver;
+import net.jqwik.micronaut.internal.hook.test.lifecycle.AfterAll;
+import net.jqwik.micronaut.internal.hook.test.lifecycle.BeforeAll;
+import net.jqwik.micronaut.internal.hook.test.lifecycle.properties.AroundPropertyExecution;
+import net.jqwik.micronaut.internal.hook.test.lifecycle.properties.AroundPropertyLifecycleMethods;
+import net.jqwik.micronaut.internal.hook.test.lifecycle.properties.InterceptAfterPropertyMethod;
+import net.jqwik.micronaut.internal.hook.test.lifecycle.properties.InterceptBeforePropertyMethod;
+import net.jqwik.micronaut.internal.hook.test.lifecycle.tries.AroundTryExecution;
+import net.jqwik.micronaut.internal.hook.test.lifecycle.tries.AroundTryLifecycleMethods;
+import net.jqwik.micronaut.internal.hook.test.lifecycle.tries.InterceptAfterTryMethod;
+import net.jqwik.micronaut.internal.hook.test.lifecycle.tries.InterceptBeforeTryMethod;
 
 @API(status = API.Status.INTERNAL)
 public class JqwikMicronautRegistrar implements RegistrarHook {

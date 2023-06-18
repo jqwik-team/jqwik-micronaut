@@ -1,4 +1,4 @@
-package net.jqwik.micronaut.extension;
+package net.jqwik.micronaut.internal.extension;
 
 import java.lang.reflect.AnnotatedElement;
 
@@ -9,7 +9,7 @@ import io.micronaut.test.context.TestContext;
 import net.jqwik.api.lifecycle.ContainerLifecycleContext;
 import net.jqwik.api.lifecycle.PropertyLifecycleContext;
 import net.jqwik.api.lifecycle.TryLifecycleContext;
-import net.jqwik.micronaut.annotation.JqwikMicronautTest;
+import net.jqwik.micronaut.JqwikMicronautTest;
 
 class TestContextUtils {
     /**

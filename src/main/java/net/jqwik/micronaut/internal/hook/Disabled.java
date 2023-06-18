@@ -1,10 +1,11 @@
-package net.jqwik.micronaut.hook;
+package net.jqwik.micronaut.internal.hook;
 
 import io.micronaut.context.annotation.Requires;
 import jakarta.annotation.Nonnull;
+
 import net.jqwik.api.lifecycle.LifecycleContext;
 import net.jqwik.api.lifecycle.SkipExecutionHook;
-import net.jqwik.micronaut.extension.JqwikMicronautExtension;
+import net.jqwik.micronaut.internal.extension.JqwikMicronautExtension;
 
 public class Disabled implements SkipExecutionHook {
     @Override

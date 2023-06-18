@@ -1,8 +1,8 @@
-package net.jqwik.micronaut.hook.test.lifecycle.utils;
+package net.jqwik.micronaut.internal.hook.test.lifecycle.utils;
 
 import net.jqwik.api.lifecycle.LifecycleContext;
 import net.jqwik.api.lifecycle.TryLifecycleContext;
-import net.jqwik.micronaut.annotation.JqwikMicronautTest;
+import net.jqwik.micronaut.JqwikMicronautTest;
 
 public class LifecycleContextUtils {
     public static boolean isPerProperty(final LifecycleContext context) {

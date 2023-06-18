@@ -1,8 +1,8 @@
 package net.jqwik.micronaut;
 
 import io.micronaut.context.annotation.Requires;
+
 import net.jqwik.api.Example;
-import net.jqwik.micronaut.annotation.JqwikMicronautTest;
 
 import static org.assertj.core.api.Assertions.fail;
 
