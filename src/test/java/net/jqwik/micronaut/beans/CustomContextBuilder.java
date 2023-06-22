@@ -1,13 +1,13 @@
 package net.jqwik.micronaut.beans;
 
+import java.util.Collections;
+
 import io.micronaut.context.DefaultApplicationContextBuilder;
 import io.micronaut.core.annotation.Introspected;
-
-import java.util.Map;
 
 @Introspected
 public class CustomContextBuilder extends DefaultApplicationContextBuilder {
     CustomContextBuilder() {
-        properties(Map.of("custom.builder.prop", "value"));
+        properties(Collections.singletonMap("custom.builder.prop", "value"));
     }
 }

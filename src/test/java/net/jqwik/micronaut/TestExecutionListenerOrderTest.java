@@ -1,8 +1,8 @@
 package net.jqwik.micronaut;
 
 import jakarta.inject.Inject;
+
 import net.jqwik.api.Property;
-import net.jqwik.micronaut.annotation.JqwikMicronautTest;
 import net.jqwik.micronaut.listeners.FirstExecutionListener;
 import net.jqwik.micronaut.listeners.SecondExecutionListener;
 

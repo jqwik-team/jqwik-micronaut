@@ -1,20 +1,20 @@
 package net.jqwik.micronaut;
 
-import io.micronaut.test.annotation.TransactionMode;
-import jakarta.inject.Inject;
-import net.jqwik.api.Property;
-import net.jqwik.micronaut.annotation.DbProperties;
-import net.jqwik.micronaut.annotation.JqwikMicronautTest;
-import net.jqwik.micronaut.beans.Book;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaQuery;
 
+import io.micronaut.test.annotation.TransactionMode;
+import jakarta.inject.Inject;
+
+import net.jqwik.api.Property;
+import net.jqwik.micronaut.annotation.DbProperties;
+import net.jqwik.micronaut.beans.Book;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
-@JqwikMicronautTest(transactionMode = TransactionMode.SINGLE_TRANSACTION)
 @DbProperties
+@JqwikMicronautTest(transactionMode = TransactionMode.SINGLE_TRANSACTION, perTry = false)
 class JpaRollbackTest {
     @Inject
     @PersistenceContext

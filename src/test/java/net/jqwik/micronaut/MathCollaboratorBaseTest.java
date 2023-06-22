@@ -6,8 +6,8 @@ import io.micronaut.http.HttpRequest;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
 import jakarta.inject.Inject;
+
 import net.jqwik.api.Property;
-import net.jqwik.micronaut.annotation.JqwikMicronautTest;
 import net.jqwik.micronaut.beans.math.MathService;
 
 import static org.assertj.core.api.Assertions.assertThat;

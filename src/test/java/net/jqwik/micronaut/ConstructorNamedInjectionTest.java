@@ -1,8 +1,8 @@
 package net.jqwik.micronaut;
 
 import jakarta.inject.Named;
+
 import net.jqwik.api.Property;
-import net.jqwik.micronaut.annotation.JqwikMicronautTest;
 import net.jqwik.micronaut.beans.named.MyInterface;
 
 import static org.assertj.core.api.Assertions.assertThat;

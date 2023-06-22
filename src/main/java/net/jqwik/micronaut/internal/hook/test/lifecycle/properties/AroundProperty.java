@@ -1,27 +1,34 @@
-package net.jqwik.micronaut.hook.test.lifecycle;
+package net.jqwik.micronaut.internal.hook.test.lifecycle.properties;
 
 import jakarta.annotation.Nonnull;
+
 import net.jqwik.api.NonNullApi;
 import net.jqwik.api.lifecycle.AroundPropertyHook;
 import net.jqwik.api.lifecycle.PropertyExecutionResult;
 import net.jqwik.api.lifecycle.PropertyExecutor;
 import net.jqwik.api.lifecycle.PropertyLifecycleContext;
-import net.jqwik.micronaut.extension.JqwikMicronautExtension;
+import net.jqwik.micronaut.internal.extension.JqwikMicronautExtension;
+import net.jqwik.micronaut.internal.hook.test.lifecycle.utils.LifecycleContextUtils;
 
-public class AroundPropertyLifecycleMethods implements AroundPropertyHook {
+public class AroundProperty implements AroundPropertyHook {
     private final JqwikMicronautExtension extension;
 
-    AroundPropertyLifecycleMethods() {
+    AroundProperty() {
         this.extension = JqwikMicronautExtension.STORE.get();
     }
 
     @Override
     @NonNullApi
     @Nonnull
-    public PropertyExecutionResult aroundProperty(final PropertyLifecycleContext context,
-                                                  final PropertyExecutor property) throws Throwable {
-        extension.beforeProperty(context);
-        return property.executeAndFinally(() -> extension.afterProperty(context));
+    public PropertyExecutionResult aroundProperty(
+            final PropertyLifecycleContext context,
+            final PropertyExecutor property
+    ) throws Exception {
+        if (LifecycleContextUtils.isPerProperty(context)) {
+            extension.before(context);
+            return property.executeAndFinally(() -> extension.after(context));
+        }
+        return property.execute();
     }
 
     @Override

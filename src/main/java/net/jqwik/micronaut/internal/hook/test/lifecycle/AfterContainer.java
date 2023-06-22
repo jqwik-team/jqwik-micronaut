@@ -1,26 +1,25 @@
-package net.jqwik.micronaut.hook.test.lifecycle;
+package net.jqwik.micronaut.internal.hook.test.lifecycle;
 
 import net.jqwik.api.NonNullApi;
 import net.jqwik.api.lifecycle.AfterContainerHook;
 import net.jqwik.api.lifecycle.ContainerLifecycleContext;
-import net.jqwik.micronaut.extension.JqwikMicronautExtension;
+import net.jqwik.micronaut.internal.extension.JqwikMicronautExtension;
 
-public class AfterAll implements AfterContainerHook {
+public class AfterContainer implements AfterContainerHook {
     private final JqwikMicronautExtension extension;
 
-    AfterAll() {
+    AfterContainer() {
         this.extension = JqwikMicronautExtension.STORE.get();
     }
 
     @Override
     @NonNullApi
-    public void afterContainer(final ContainerLifecycleContext context) throws Throwable {
+    public void afterContainer(final ContainerLifecycleContext context) throws Exception {
         extension.afterContainer(context);
     }
 
     @Override
     public int afterContainerProximity() {
-        // Run it after @AfterContainer methods
-        return -20;
+        return -20;     // Run it after @AfterContainer methods
     }
 }

@@ -2,8 +2,8 @@ package net.jqwik.micronaut;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+
 import net.jqwik.api.Property;
-import net.jqwik.micronaut.annotation.JqwikMicronautTest;
 import net.jqwik.micronaut.beans.FactoryBean;
 
 import static org.assertj.core.api.Assertions.assertThat;

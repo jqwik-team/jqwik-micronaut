@@ -6,8 +6,8 @@ import io.micronaut.context.event.StartupEvent;
 import io.micronaut.test.annotation.MockBean;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+
 import net.jqwik.api.Property;
-import net.jqwik.micronaut.annotation.JqwikMicronautTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -1,14 +1,20 @@
-package net.jqwik.micronaut.hook.test.lifecycle;
+package net.jqwik.micronaut.internal.hook.test.lifecycle.properties;
 
 import jakarta.annotation.Nonnull;
+
 import net.jqwik.api.NonNullApi;
 import net.jqwik.api.lifecycle.AroundPropertyHook;
 import net.jqwik.api.lifecycle.PropertyExecutionResult;
 import net.jqwik.api.lifecycle.PropertyExecutor;
 import net.jqwik.api.lifecycle.PropertyLifecycleContext;
-import net.jqwik.micronaut.extension.JqwikMicronautExtension;
+import net.jqwik.micronaut.internal.extension.JqwikMicronautExtension;
+import net.jqwik.micronaut.internal.hook.test.lifecycle.utils.LifecycleContextUtils;
 
-public class InterceptAfterPropertyMethod {
+public class AroundAfterProperty {
+
+    private AroundAfterProperty() {
+    }
+
     public static class Pre implements AroundPropertyHook {
         private final JqwikMicronautExtension micronautExtension;
 
@@ -21,7 +27,10 @@ public class InterceptAfterPropertyMethod {
         @Nonnull
         public PropertyExecutionResult aroundProperty(final PropertyLifecycleContext context,
                                                       final PropertyExecutor property) {
-            return property.executeAndFinally(() -> micronautExtension.preAfterPropertyMethod(context));
+            if (LifecycleContextUtils.isPerProperty(context)) {
+                return property.executeAndFinally(() -> micronautExtension.preAfter(context));
+            }
+            return property.execute();
         }
 
         @Override
@@ -42,7 +51,10 @@ public class InterceptAfterPropertyMethod {
         @Nonnull
         public PropertyExecutionResult aroundProperty(final PropertyLifecycleContext context,
                                                       final PropertyExecutor property) {
-            return property.executeAndFinally(() -> micronautExtension.postAfterPropertyMethod(context));
+            if (LifecycleContextUtils.isPerProperty(context)) {
+                return property.executeAndFinally(() -> micronautExtension.postAfter(context));
+            }
+            return property.execute();
         }
 
         @Override
