@@ -12,7 +12,7 @@ static isSnapshotRelease(versionString) {
 ext {
     moduleName = 'net.jqwik.micronaut'
     jqwikMicronautVersion = '1.0-SNAPSHOT'
-    jqwikVersion = '1.7.4-SNAPSHOT'
+    jqwikVersion = '1.7.4'
     isSnapshotRelease = isSnapshotRelease(jqwikMicronautVersion)
 }
 
