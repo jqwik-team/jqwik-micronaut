@@ -1,5 +1,6 @@
 package net.jqwik.micronaut.internal.hook.test;
 
+import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.annotation.Requires;
 import jakarta.annotation.Nonnull;
 
@@ -11,11 +12,11 @@ public class Disabled implements SkipExecutionHook {
     @Override
     @Nonnull
     public SkipResult shouldBeSkipped(final LifecycleContext context) {
-        final io.micronaut.context.ApplicationContext applicationContext = JqwikMicronautExtension.STORE.get().getApplicationContext();
+        final ApplicationContext applicationContext = JqwikMicronautExtension.STORE.get().getApplicationContext();
         final boolean isAnyPropertyMissing = context.findAnnotationsInContainer(Requires.class)
-                .stream()
-                .map(Requires::property)
-                .anyMatch(e -> !applicationContext.containsProperties(e));
+                                                    .stream()
+                                                    .map(Requires::property)
+                                                    .anyMatch(e -> !applicationContext.containsProperties(e));
 
         if (isAnyPropertyMissing) {
             return SkipResult.skip("Expected property used in @Requires doesn't exist!");

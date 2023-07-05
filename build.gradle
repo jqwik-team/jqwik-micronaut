@@ -1,18 +1,18 @@
 plugins {
-    id('io.micronaut.minimal.library') version "3.7.8"
-    id 'java-library'
-    id 'maven-publish'
-    id 'signing'
+    id("io.micronaut.minimal.library") version "3.7.10"
+    id "java-library"
+    id "maven-publish"
+    id "signing"
 }
 
 static isSnapshotRelease(versionString) {
-    versionString.endsWith('SNAPSHOT')
+    versionString.endsWith("SNAPSHOT")
 }
 
 ext {
-    moduleName = 'net.jqwik.micronaut'
-    jqwikMicronautVersion = '1.0-SNAPSHOT'
-    jqwikVersion = '1.7.4'
+    moduleName = "net.jqwik.micronaut"
+    jqwikMicronautVersion = "1.0.0"
+    jqwikVersion = "1.7.4"
     isSnapshotRelease = isSnapshotRelease(jqwikMicronautVersion)
 }
 
@@ -23,33 +23,32 @@ description = "Jqwik Micronaut support module"
 
 repositories {
     mavenCentral()
-    maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots' }
+    maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots" }
 }
 
 dependencies {
     api("net.jqwik:jqwik:${jqwikVersion}")
-    implementation('io.micronaut.test:micronaut-test-core:3.9.2')
-    implementation('io.micronaut:micronaut-context:3.8.9')
-    implementation 'org.mockito:mockito-core:5.3.0'
 
-    testImplementation("io.micronaut:micronaut-http-client:3.8.9")
-    testImplementation("io.micronaut:micronaut-http-server-netty:3.8.9")
-    testImplementation('org.assertj:assertj-core:3.24.2')
-    testImplementation 'org.slf4j:slf4j-simple:2.0.7'
+    implementation("io.micronaut.test:micronaut-test-core:3.9.2")
+    implementation("io.micronaut:micronaut-context:${micronautVersion}")
+    implementation("org.mockito:mockito-core:5.4.0")
 
-    /* JPA dependencies */
     testImplementation("io.micronaut.data:micronaut-data-hibernate-jpa:3.10.0")
-    testImplementation 'org.springframework:spring-tx:5.3.27'
-    testRuntimeOnly('com.h2database:h2:2.1.214')
-    testRuntimeOnly('io.micronaut.configuration:micronaut-jdbc-tomcat:2.2.6')
-    /* End of JPA dependencies */
+    testImplementation("io.micronaut:micronaut-http-client:${micronautVersion}")
+    testImplementation("io.micronaut:micronaut-http-server-netty:${micronautVersion}")
+    testImplementation("org.assertj:assertj-core:3.24.2")
+    testImplementation("org.slf4j:slf4j-simple:2.0.7")
+    testImplementation("com.google.code.findbugs:jsr305:3.0.2")
+
+    testRuntimeOnly("com.h2database:h2:2.2.220")
+    testRuntimeOnly("io.micronaut.configuration:micronaut-jdbc-tomcat:2.2.6")
 }
 
 jar {
-    archiveBaseName.set('jqwik-micronaut')
+    archiveBaseName.set("jqwik-micronaut")
     archiveVersion.set("${jqwikMicronautVersion}")
     manifest {
-        attributes('Automatic-Module-Name': "${moduleName}")
+        attributes("Automatic-Module-Name": "${moduleName}")
     }
 }
 
@@ -61,24 +60,22 @@ java {
 }
 
 compileTestJava {
-    options.compilerArgs += '-parameters'
-    options.encoding = 'UTF-8'
+    options.compilerArgs += "-parameters"
+    options.encoding = "UTF-8"
 }
 
 test {
     useJUnitPlatform {
-        includeEngines 'jqwik'
+        includeEngines "jqwik"
     }
-
-    // testLogging.showStandardStreams = true
 }
 
 publishing {
     repositories {
         maven {
             // hint: password is in ~/.gradle/gradle.properties
-            def ossrhUsername = project.hasProperty('ossrhUsername') ? project.ossrhUsername : ''
-            def ossrhPassword = project.hasProperty('ossrhPassword') ? project.ossrhPassword : ''
+            def ossrhUsername = project.hasProperty("ossrhUsername") ? project.ossrhUsername : ""
+            def ossrhPassword = project.hasProperty("ossrhPassword") ? project.ossrhPassword : ""
 
             credentials {
                 username = ossrhUsername
@@ -93,30 +90,30 @@ publishing {
     }
     publications {
         jqwikMicronaut(MavenPublication) {
-            groupId = 'net.jqwik'
-            artifactId = 'jqwik-micronaut'
+            groupId = "net.jqwik"
+            artifactId = "jqwik-micronaut"
             from components.java
             pom {
-                groupId = 'net.jqwik'
-                name = 'jqwik-micronaut'
+                groupId = "net.jqwik"
+                name = "jqwik-micronaut"
                 description = "Jqwik Micronaut support module"
-                url = 'https://github.com/jqwik-team/jqwik-micronaut'
+                url = "https://github.com/jqwik-team/jqwik-micronaut"
                 licenses {
                     license {
-                        name = 'Eclipse Public License - v 2.0'
-                        url = 'http://www.eclipse.org/legal/epl-v20.html'
+                        name = "Eclipse Public License - v 2.0"
+                        url = "http://www.eclipse.org/legal/epl-v20.html"
                     }
                 }
                 developers {
                     developer {
-                        id = 'Nahuel92'
-                        name = 'Nahuel Rodríguez'
+                        id = "Nahuel92"
+                        name = "Nahuel Rodríguez"
                     }
                 }
                 scm {
-                    connection = 'scm:git:git://github.com/jqwik-team/jqwik-micronaut.git'
-                    developerConnection = 'scm:git:git://github.com/jqwik-team/jqwik-micronaut.git'
-                    url = 'https://github.com/jqwik-team/jqwik-micronaut'
+                    connection = "scm:git:git://github.com/jqwik-team/jqwik-micronaut.git"
+                    developerConnection = "scm:git:git://github.com/jqwik-team/jqwik-micronaut.git"
+                    url = "https://github.com/jqwik-team/jqwik-micronaut"
                 }
             }
         }
@@ -130,6 +127,5 @@ signing {
 }
 
 wrapper {
-    gradleVersion = '8.0.2'
-    // upgrade with: ./gradlew wrapper
+    gradleVersion = "8.2" // upgrade with: ./gradlew wrapper
 }

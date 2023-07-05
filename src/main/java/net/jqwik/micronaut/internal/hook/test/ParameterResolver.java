@@ -86,8 +86,7 @@ public class ParameterResolver implements ResolveParameterHook {
                 if (index < arguments.length) {
                     return arguments[index];
                 }
-            } catch (final NoSuchMethodException e) {
-                return null;
+            } catch (final NoSuchMethodException ignored) {
             }
             return null;
         }

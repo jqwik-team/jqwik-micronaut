@@ -6,6 +6,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import io.micronaut.test.annotation.TransactionMode;
 import jakarta.inject.Inject;
 
+import net.jqwik.api.ForAll;
 import net.jqwik.api.Property;
 import net.jqwik.api.lifecycle.AfterTry;
 import net.jqwik.micronaut.annotation.DbProperties;
@@ -28,7 +29,7 @@ class JpaSingleTransactionNoSetupPerTryTest {
     }
 
     @Property(tries = 10)
-    void testPersistOne() {
+    void testPersistOne(@ForAll final String ignored) {
         final Book book = new Book();
         book.setTitle("The Stand");
         entityManager.persist(book);

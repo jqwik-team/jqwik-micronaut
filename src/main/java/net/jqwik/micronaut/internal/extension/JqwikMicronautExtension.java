@@ -91,7 +91,7 @@ public class JqwikMicronautExtension extends AbstractMicronautExtension<Lifecycl
 
     @Override
     protected void alignMocks(final LifecycleContext context, final Object instance) {
-        if (specDefinition == null) {
+        if (specDefinition == null || !(context instanceof MethodLifecycleContext)) {
             return;
         }
         ((MethodLifecycleContext) context).testInstances()
