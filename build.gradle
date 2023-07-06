@@ -1,29 +1,29 @@
 plugins {
-    id("io.micronaut.minimal.library") version "3.7.10"
-    id "java-library"
-    id "maven-publish"
-    id "signing"
+    id 'io.micronaut.minimal.library' version '3.7.10'
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
 }
 
 static isSnapshotRelease(versionString) {
-    versionString.endsWith("SNAPSHOT")
+    versionString.endsWith('SNAPSHOT')
 }
 
 ext {
-    moduleName = "net.jqwik.micronaut"
-    jqwikMicronautVersion = "1.0.0"
-    jqwikVersion = "1.7.4"
+    moduleName = 'net.jqwik.micronaut'
+    jqwikMicronautVersion = '1.0.0'
+    jqwikVersion = '1.7.4'
     isSnapshotRelease = isSnapshotRelease(jqwikMicronautVersion)
 }
 
 
 group = moduleName
 version = jqwikMicronautVersion
-description = "Jqwik Micronaut support module"
+description = 'Jqwik Micronaut support module'
 
 repositories {
     mavenCentral()
-    maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots" }
+    maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots' }
 }
 
 dependencies {
@@ -45,10 +45,10 @@ dependencies {
 }
 
 jar {
-    archiveBaseName.set("jqwik-micronaut")
+    archiveBaseName.set('jqwik-micronaut')
     archiveVersion.set("${jqwikMicronautVersion}")
     manifest {
-        attributes("Automatic-Module-Name": "${moduleName}")
+        attributes('Automatic-Module-Name': "${moduleName}")
     }
 }
 
@@ -60,13 +60,13 @@ java {
 }
 
 compileTestJava {
-    options.compilerArgs += "-parameters"
-    options.encoding = "UTF-8"
+    options.compilerArgs += '-parameters'
+    options.encoding = 'UTF-8'
 }
 
 test {
     useJUnitPlatform {
-        includeEngines "jqwik"
+        includeEngines 'jqwik'
     }
 }
 
@@ -74,8 +74,8 @@ publishing {
     repositories {
         maven {
             // hint: password is in ~/.gradle/gradle.properties
-            def ossrhUsername = project.hasProperty("ossrhUsername") ? project.ossrhUsername : ""
-            def ossrhPassword = project.hasProperty("ossrhPassword") ? project.ossrhPassword : ""
+            def ossrhUsername = project.hasProperty('ossrhUsername') ? project.ossrhUsername : ''
+            def ossrhPassword = project.hasProperty('ossrhPassword') ? project.ossrhPassword : ''
 
             credentials {
                 username = ossrhUsername
@@ -90,30 +90,30 @@ publishing {
     }
     publications {
         jqwikMicronaut(MavenPublication) {
-            groupId = "net.jqwik"
-            artifactId = "jqwik-micronaut"
+            groupId = 'net.jqwik'
+            artifactId = 'jqwik-micronaut'
             from components.java
             pom {
-                groupId = "net.jqwik"
-                name = "jqwik-micronaut"
+                groupId = 'net.jqwik'
+                name = 'jqwik-micronaut'
                 description = "Jqwik Micronaut support module"
-                url = "https://github.com/jqwik-team/jqwik-micronaut"
+                url = 'https://github.com/jqwik-team/jqwik-micronaut'
                 licenses {
                     license {
-                        name = "Eclipse Public License - v 2.0"
-                        url = "http://www.eclipse.org/legal/epl-v20.html"
+                        name = 'Eclipse Public License - v 2.0'
+                        url = 'http://www.eclipse.org/legal/epl-v20.html'
                     }
                 }
                 developers {
                     developer {
-                        id = "Nahuel92"
-                        name = "Nahuel Rodríguez"
+                        id = 'Nahuel92'
+                        name = 'Nahuel Rodríguez'
                     }
                 }
                 scm {
-                    connection = "scm:git:git://github.com/jqwik-team/jqwik-micronaut.git"
-                    developerConnection = "scm:git:git://github.com/jqwik-team/jqwik-micronaut.git"
-                    url = "https://github.com/jqwik-team/jqwik-micronaut"
+                    connection = 'scm:git:git://github.com/jqwik-team/jqwik-micronaut.git'
+                    developerConnection = 'scm:git:git://github.com/jqwik-team/jqwik-micronaut.git'
+                    url = 'https://github.com/jqwik-team/jqwik-micronaut'
                 }
             }
         }
