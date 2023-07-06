@@ -29,19 +29,19 @@ repositories {
 dependencies {
     api("net.jqwik:jqwik:${jqwikVersion}")
 
-    implementation("io.micronaut.test:micronaut-test-core:3.9.2")
+    implementation('io.micronaut.test:micronaut-test-core:3.9.2')
     implementation("io.micronaut:micronaut-context:${micronautVersion}")
-    implementation("org.mockito:mockito-core:5.4.0")
+    implementation('org.mockito:mockito-core:5.4.0')
 
-    testImplementation("io.micronaut.data:micronaut-data-hibernate-jpa:3.10.0")
+    testImplementation('io.micronaut.data:micronaut-data-hibernate-jpa:3.10.0')
     testImplementation("io.micronaut:micronaut-http-client:${micronautVersion}")
     testImplementation("io.micronaut:micronaut-http-server-netty:${micronautVersion}")
-    testImplementation("org.assertj:assertj-core:3.24.2")
-    testImplementation("org.slf4j:slf4j-simple:2.0.7")
-    testImplementation("com.google.code.findbugs:jsr305:3.0.2")
+    testImplementation('org.assertj:assertj-core:3.24.2')
+    testImplementation('org.slf4j:slf4j-simple:2.0.7')
+    testImplementation('com.google.code.findbugs:jsr305:3.0.2')
 
-    testRuntimeOnly("com.h2database:h2:2.2.220")
-    testRuntimeOnly("io.micronaut.configuration:micronaut-jdbc-tomcat:2.2.6")
+    testRuntimeOnly('com.h2database:h2:2.2.220')
+    testRuntimeOnly('io.micronaut.configuration:micronaut-jdbc-tomcat:2.2.6')
 }
 
 jar {
