@@ -19,7 +19,7 @@ ext {
 
 group = moduleName
 version = jqwikMicronautVersion
-description = 'Jqwik Micronaut support module'
+description = "Jqwik Micronaut support module"
 
 repositories {
     mavenCentral()
