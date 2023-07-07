@@ -13,7 +13,6 @@ import net.jqwik.micronaut.internal.extension.JqwikMicronautExtension;
 import net.jqwik.micronaut.internal.hook.test.lifecycle.utils.LifecycleContextUtils;
 
 public class AroundAfterTry {
-
     private AroundAfterTry() {
     }
 

@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.micronaut.inject.BeanDefinition;
+import io.micronaut.inject.FieldInjectionPoint;
 import io.micronaut.test.annotation.MockBean;
 
 import net.jqwik.api.JqwikException;
@@ -39,11 +40,11 @@ class MockInjector {
             final Class<?> specInstanceClass = specInstance.getClass();
             final List<Method> mockBeanAnnotatedMethods = getMockBeanAnnotated(specInstanceClass.getDeclaredMethods());
             final List<Field> mockBeanAnnotatedFields = getMockBeanAnnotated(specInstanceClass.getDeclaredFields());
-            for (final io.micronaut.inject.FieldInjectionPoint<?, ?> injectedField : specDefinition.getInjectedFields()) {
+            for (final FieldInjectionPoint<?, ?> injectedField : specDefinition.getInjectedFields()) {
                 Stream.concat(mockBeanAnnotatedMethods.stream(), mockBeanAnnotatedFields.stream())
-                        .filter(e -> isSameType(e, injectedField.getType()))
-                        .map(e -> getMock(e, specInstance))
-                        .forEach(e -> injectMock(specInstance, injectedField.getField(), e));
+                      .filter(e -> isSameType(e, injectedField.getType()))
+                      .map(e -> getMock(e, specInstance))
+                      .forEach(e -> injectMock(specInstance, injectedField.getField(), e));
             }
         };
     }
@@ -51,8 +52,8 @@ class MockInjector {
     @SafeVarargs
     private static <T extends AccessibleObject> List<T> getMockBeanAnnotated(final T... accessibleObject) {
         return Arrays.stream(accessibleObject)
-                .filter(e -> e.isAnnotationPresent(MockBean.class))
-                .collect(Collectors.toList());
+                     .filter(e -> e.isAnnotationPresent(MockBean.class))
+                     .collect(Collectors.toList());
     }
 
     private static boolean isSameType(final AccessibleObject accessibleObject, final Class<?> targetType) {
@@ -65,8 +66,10 @@ class MockInjector {
         return false;
     }
 
-    private static Map.Entry<AccessibleObject, Callable<?>> getMock(final AccessibleObject accessibleObject,
-                                                                    final Object specInstance) {
+    private static Map.Entry<AccessibleObject, Callable<?>> getMock(
+            final AccessibleObject accessibleObject,
+            final Object specInstance
+    ) {
         if (accessibleObject instanceof Field) {
             return new AbstractMap.SimpleEntry<>(accessibleObject, () -> ((Field) accessibleObject).get(specInstance));
         }
@@ -76,8 +79,10 @@ class MockInjector {
         throw new JqwikException("Expected mock to be either Field or Method!");
     }
 
-    private static void injectMock(final Object specInstance, final Field fieldToInject,
-                                   final Map.Entry<AccessibleObject, Callable<?>> mockProvider) {
+    private static void injectMock(
+            final Object specInstance, final Field fieldToInject,
+            final Map.Entry<AccessibleObject, Callable<?>> mockProvider
+    ) {
         fieldToInject.setAccessible(true);
         mockProvider.getKey().setAccessible(true);
         try {

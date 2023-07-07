@@ -1,5 +1,5 @@
 plugins {
-    id('io.micronaut.minimal.library') version "3.7.8"
+    id 'io.micronaut.minimal.library' version '3.7.10'
     id 'java-library'
     id 'maven-publish'
     id 'signing'
@@ -11,7 +11,7 @@ static isSnapshotRelease(versionString) {
 
 ext {
     moduleName = 'net.jqwik.micronaut'
-    jqwikMicronautVersion = '1.0-SNAPSHOT'
+    jqwikMicronautVersion = '1.0.0'
     jqwikVersion = '1.7.4'
     isSnapshotRelease = isSnapshotRelease(jqwikMicronautVersion)
 }
@@ -28,21 +28,20 @@ repositories {
 
 dependencies {
     api("net.jqwik:jqwik:${jqwikVersion}")
+
     implementation('io.micronaut.test:micronaut-test-core:3.9.2')
-    implementation('io.micronaut:micronaut-context:3.8.9')
-    implementation 'org.mockito:mockito-core:5.3.0'
+    implementation("io.micronaut:micronaut-context:${micronautVersion}")
+    implementation('org.mockito:mockito-core:5.4.0')
 
-    testImplementation("io.micronaut:micronaut-http-client:3.8.9")
-    testImplementation("io.micronaut:micronaut-http-server-netty:3.8.9")
+    testImplementation('io.micronaut.data:micronaut-data-hibernate-jpa:3.10.0')
+    testImplementation("io.micronaut:micronaut-http-client:${micronautVersion}")
+    testImplementation("io.micronaut:micronaut-http-server-netty:${micronautVersion}")
     testImplementation('org.assertj:assertj-core:3.24.2')
-    testImplementation 'org.slf4j:slf4j-simple:2.0.7'
+    testImplementation('org.slf4j:slf4j-simple:2.0.7')
+    testImplementation('com.google.code.findbugs:jsr305:3.0.2')
 
-    /* JPA dependencies */
-    testImplementation("io.micronaut.data:micronaut-data-hibernate-jpa:3.10.0")
-    testImplementation 'org.springframework:spring-tx:5.3.27'
-    testRuntimeOnly('com.h2database:h2:2.1.214')
+    testRuntimeOnly('com.h2database:h2:2.2.220')
     testRuntimeOnly('io.micronaut.configuration:micronaut-jdbc-tomcat:2.2.6')
-    /* End of JPA dependencies */
 }
 
 jar {
@@ -69,8 +68,6 @@ test {
     useJUnitPlatform {
         includeEngines 'jqwik'
     }
-
-    // testLogging.showStandardStreams = true
 }
 
 publishing {
@@ -130,6 +127,5 @@ signing {
 }
 
 wrapper {
-    gradleVersion = '8.0.2'
-    // upgrade with: ./gradlew wrapper
+    gradleVersion = "8.2" // upgrade with: ./gradlew wrapper
 }
